@@ -1,0 +1,116 @@
+.main {
+    border: 1px solid black;
+    margin: auto;
+    width: 50%;
+    border-collapse: collapse;
+}
+/*
+table.main:not(.links) td, table.main:not(.container) td {
+    border: 1px solid black;
+}
+*/
+table, tr, th, td {
+    padding: 3px;
+    border: 1px solid black;
+    border-collapse: collapse;    
+}
+
+.one {
+    background-color: #ffffff
+}
+
+.two {
+    background-color: #e3e3e3
+}
+
+.content_cell {
+    padding: 3%;
+}
+
+#progress_cell {
+    width: 70%;
+}
+
+.links, .links tr, .links td {
+    border: none;
+}
+
+.sub {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.sub th, .sub td {
+    border: 1px solid black;
+}
+
+.embbed td {
+    border: none;
+}
+
+#item {
+    border: solid 1px black;
+    border-collapse: collapse;
+}
+#item th, #item td {
+    border: solid 1px black;
+}
+
+.stat_table {
+    border: 3px solid Black;
+    border-collapse: collapse;
+}
+
+.stat_table th {
+    border: 1px solid Black;
+    border-bottom: 3px solid Black;
+}
+
+.stat_table td, .stat_table th {
+    padding: 5px;
+}
+
+.stat_table tr, .stat_table td {
+    border: 1px solid Black;
+}
+
+#stat_frame .stat_table {
+    border: 3px solid Black;
+    border-collapse: collapse;
+}
+
+#stat_frame .stat_table th {
+    border: 1px solid Black;
+    border-bottom: 3px solid Black;
+}
+
+#stat_frame .stat_table td, .stat_table th {
+    padding: 5px;
+}
+
+#stat_frame .stat_table tr, #stat_frame .stat_table td {
+    border: 1px solid Black;
+}
+
+#stat_frame {
+    width: 1000px;    
+    border-collapse: collapse;
+}
+
+#stat_frame td {
+    padding: 5px;
+}
+
+#stat_frame, #stat_frame tr, #stat_frame th, #stat_frame td {
+    border: none;
+}
+
+.container, .container tr, .container td {
+    border: none;
+}
+
+.container_table, .container_table tr, .container_table td {
+    border: 1px solid black;
+    padding: 5px;
+}
+
