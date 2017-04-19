@@ -102,6 +102,18 @@ if(isset($_SESSION["user"])) {
                                         $pizza = $array[1];
                                         $kebap = $array[2];
                                         $schnitzel = $array[3];
+                                        $sum = $noodles + $pizza + $kebap + $schnitzel;
+                                        if($sum == 0) {
+                                            $noodles_percent = 0;
+                                            $pizza_percent = 0;
+                                            $kebap_percent = 0;
+                                            $schnitzel_percent = 0;                                            
+                                        } else {
+                                            $noodles_percent = 100*round($noodles/$sum,2);
+                                            $pizza_percent = 100*round($pizza/$sum,2);
+                                            $kebap_percent = 100*round($kebap/$sum,2);
+                                            $schnitzel_percent = 100*round($schnitzel/$sum,2);
+                                        }
 
                                         ?>
                                         <div id="poll">
@@ -112,8 +124,8 @@ if(isset($_SESSION["user"])) {
                                                     </td>
                                                     <td id="progress_cell">
                                                         <div style="width: 100%">
-                                                            <div style="text-align: center; color: darkblue; background: #3aacff; width: <?php echo(100*round($noodles/($noodles+$pizza+$kebap+$schnitzel),2)); ?>%;">
-                                                                <?php echo(100*round($noodles/($noodles+$pizza+$kebap+$schnitzel),2)); ?>%
+                                                            <div style="text-align: center; color: darkblue; background: #3aacff; width: <?php echo $noodles_percent; ?>%;">
+                                                                <?php echo $noodles_percent; ?>%
                                                             </div>
                                                         </div>
                                                     </td>
@@ -124,8 +136,8 @@ if(isset($_SESSION["user"])) {
                                                     </td>
                                                     <td id="progress_cell">
                                                         <div style="width: 100%">
-                                                            <div style="text-align: center; color: darkblue; background: #3aacff; width: <?php echo(100*round($pizza/($noodles+$pizza+$kebap+$schnitzel),2)); ?>%;">
-                                                                <?php echo(100*round($pizza/($noodles+$pizza+$kebap+$schnitzel),2)); ?>%
+                                                            <div style="text-align: center; color: darkblue; background: #3aacff; width: <?php echo $pizza_percent; ?>%;">
+                                                                <?php echo $pizza_percent; ?>%
                                                             </div>
                                                         </div>
                                                     </td>
@@ -137,8 +149,8 @@ if(isset($_SESSION["user"])) {
                                                     </td>
                                                     <td id="progress_cell">
                                                         <div style="width: 100%">
-                                                            <div style="text-align: center; color: darkblue; background: #3aacff; width: <?php echo(100*round($kebap/($noodles+$pizza+$kebap+$schnitzel),2)); ?>%;">
-                                                                <?php echo(100*round($kebap/($noodles+$pizza+$kebap+$schnitzel),2)); ?>%
+                                                            <div style="text-align: center; color: darkblue; background: #3aacff; width: <?php echo $kebap_percent; ?>%;">
+                                                                <?php echo $kebap_percent; ?>%
                                                             </div>
                                                         </div>
                                                     </td>
@@ -150,8 +162,8 @@ if(isset($_SESSION["user"])) {
                                                     </td>
                                                     <td id="progress_cell">
                                                         <div style="width: 100%">
-                                                            <div style="text-align: center; color: darkblue; background: #3aacff; width: <?php echo(100*round($schnitzel/($noodles+$pizza+$kebap+$schnitzel),2)); ?>%;">
-                                                                <?php echo(100*round($schnitzel/($noodles+$pizza+$kebap+$schnitzel),2)); ?>%
+                                                            <div style="text-align: center; color: darkblue; background: #3aacff; width: <?php echo $schnitzel_percent; ?>%;">
+                                                                <?php echo $schnitzel_percent; ?>%
                                                             </div>
                                                         </div>
                                                     </td>

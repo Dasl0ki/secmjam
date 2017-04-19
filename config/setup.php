@@ -1,5 +1,5 @@
 <?php
-define('SMARTY_DIR', '/var/www/vhosts/loki-net.at/smarty/');
+define('SMARTY_DIR', 'C:/xampp/htdocs/secmjam/smarty/');
 require(SMARTY_DIR . 'Smarty.class.php');
 
 class Smarty_mjam extends Smarty {
@@ -8,10 +8,10 @@ class Smarty_mjam extends Smarty {
     {
         parent::__construct();
 
-        $this->setTemplateDir('/var/www/vhosts/loki-net.at/sec-mjam.loki-net.at/templates');
-        $this->setCompileDir('/var/www/vhosts/loki-net.at/sec-mjam.loki-net.at/templates_c');
-        $this->setConfigDir('/var/www/vhosts/loki-net.at/sec-mjam.loki-net.at/configs');
-        $this->setCacheDir('/var/www/vhosts/loki-net.at/sec-mjam.loki-net.at/cache');
+        $this->setTemplateDir('C:/xampp/htdocs/secmjam/templates');
+        $this->setCompileDir('C:/xampp/htdocs/secmjam/templates_c/');
+        $this->setConfigDir('C:/xampp/htdocs/secmjam/configs/');
+        $this->setCacheDir('C:/xampp/htdocs/secmjam/cache/');
 
         $this->caching = Smarty::CACHING_LIFETIME_CURRENT;
         $this->assign('app_name', 'sec-mjam');

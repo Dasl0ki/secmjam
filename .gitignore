@@ -1,3 +1,5 @@
 /smarty
 /cache
 /nbproject
+/config/setup.php
+config/poll_result\.txt
