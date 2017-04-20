@@ -3,6 +3,7 @@
         <title>SEC Mjam</title>
         <link rel="stylesheet" href="config/style.css">
     </head>
+    {nocache}
     <body>
         <table id="stat_frame">
             <tr>
@@ -109,4 +110,5 @@
         <br>
         <a href="main.php">Zurück zur Hauptseite</a>
     </body>
+    {/nocache}
 </html>
