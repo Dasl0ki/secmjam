@@ -1,94 +1,78 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: uyve7bo
- * Date: 04.04.2016
- * Time: 07:15
- */
 require_once("config/config.php");
 require_once("config/db_cnx.php");
+require 'config/functions.php';
 session_start();
 if($_SESSION["user"]["id"] == "1") {
     ini_set("display_errors", 1);
     error_reporting(E_ALL | E_STRICT);
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 }
-$vote = $_REQUEST['vote'];
+$uservote = $_REQUEST['vote'];
 $id = $_SESSION["user"]["id"];
 
-//get content of textfile
-$filename = "config/poll_result.txt";
-$content = file($filename);
+$vote = getPollVotes();
 
-//put content in array
-$array = explode("||", $content[0]);
-$noodles = $array[0];
-$pizza = $array[1];
-$kebap = $array[2];
-$schnitzel = $array[3];
-
-if ($vote == 1) {
-    $noodles = $noodles + 1;
+if ($uservote == 1) {
+    $vote['noodles'] = $vote['noodles'] + 1;
 }
-if ($vote == 2) {
-    $pizza = $pizza + 1;
+if ($uservote == 2) {
+    $vote['pizza'] = $vote['pizza'] + 1;
 }
-if ($vote == 3) {
-    $kebap = $kebap + 1;
+if ($uservote == 3) {
+    $vote['kebap'] = $vote['kebap'] + 1;
 }
-if ($vote == 4) {
-    $schnitzel = $schnitzel + 1;
+if ($uservote == 4) {
+    $vote['schnitzel'] = $vote['schnitzel'] + 1;
 }
 
-//insert votes to txt file
-$insertvote = $noodles."||".$pizza."||".$kebap."||".$schnitzel;
-$fp = fopen($filename,"w");
-fputs($fp,$insertvote);
-fclose($fp);
+updateVotes($vote);
+$percent = getVotePercent($vote);
 $update_vote = "UPDATE login SET vote = '1' WHERE id = '$id'";
 $query = $mysqli->query($update_vote);
 $_SESSION["user"]["vote"] = "1";
 
 ?>
 
-<h2>Result:</h2>
-<table>
-    <tr>
-        <td>Noodles:</td>
-        <td>
-            <img src="img/poll.png"
-                 width='<?php echo(100*round($noodles/($noodles+$pizza+$kebap+$schnitzel),2)); ?>'
-                 height='20'>
-            <?php echo(100*round($noodles/($noodles+$pizza+$kebap+$schnitzel),2)); ?>%
-        </td>
-    </tr>
-    <tr>
-        <td>Pizza:</td>
-        <td>
-            <img src="img/poll.png"
-                 width='<?php echo(100*round($pizza/($noodles+$pizza+$kebap+$schnitzel),2)); ?>'
-                 height='20'>
-            <?php echo(100*round($pizza/($noodles+$pizza+$kebap+$schnitzel),2)); ?>%
-        </td>
-    </tr>
-    </tr>
-    <tr>
-        <td>Kebap:</td>
-        <td>
-            <img src="img/poll.png"
-                 width='<?php echo(100*round($kebap/($noodles+$pizza+$kebap+$schnitzel),2)); ?>'
-                 height='20'>
-            <?php echo(100*round($kebap/($noodles+$pizza+$kebap+$schnitzel),2)); ?>%
-        </td>
-    </tr>
-    </tr>
-    <tr>
-        <td>Schnitzel:</td>
-        <td>
-            <img src="img/poll.png"
-                 width='<?php echo(100*round($schnitzel/($noodles+$pizza+$kebap+$schnitzel),2)); ?>'
-                 height='20'>
-            <?php echo(100*round($schnitzel/($noodles+$pizza+$kebap+$schnitzel),2)); ?>%
-        </td>
-    </tr>
-</table>
+<div class="row" style="margin-top: 10px;">
+    <div class="col-xs-3">
+        Noodles:
+    </div>
+    <div class="col-xs-9">
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $percent['noodles']; ?>%; min-width: 2em;">
+              <?php echo $percent['noodles']; ?>%
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-3">
+        Pizza:
+    </div>
+    <div class="col-xs-9">
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $percent['pizza']; ?>%; min-width: 2em;">
+              <?php echo $percent['pizza']; ?>%
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-3">
+        Kebap:
+    </div>
+    <div class="col-xs-9">
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $percent['kebap']; ?>%; min-width: 2em;">
+              <?php echo $percent['kebap']; ?>%
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-3">
+        Schnitzel:
+    </div>
+    <div class="col-xs-9">
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $percent['schnitzel']; ?>%; min-width: 2em;">
+              <?php echo $percent['schnitzel']; ?>%
+            </div>
+        </div>
+    </div>
+</div>

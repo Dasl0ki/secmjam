@@ -34,44 +34,52 @@
             {include 'nav.tpl'}
             <div class="row">
                 <div class="col-md-6">
-                    <div class="well well-sm" style="display: flex; flex-flow: column; flex: 1 1 auto;">
+                    <div class="well well-sm">
                         <span style="font-size: 18px;">Übersicht</span>
-                        <p style="padding-left:25px;">
+                        <p style="padding-left:25px; padding-right: 25px;">
                             Guthaben: € 0,00
                         </p>
                     </div>
                 </div>
+                {nocache}
                 <div class="col-md-6">
                     <div class="well well-sm">
                         <span style="font-size: 18px;">Todays Lunch?</span>
-                        <form style="padding-left: 25px;">
-                            <div class="radio">
-                                <label for="noodles">                                
-                                    <input type="radio" value="1" onclick="getVote(this.value)">
-                                    Noodles
-                                </label>
-                            </div>
-                            <div class="radio">
-                                <label for="pizza">                                
-                                    <input type="radio" value="2" onclick="getVote(this.value)">
-                                    Pizza
-                                </label>
-                            </div>
-                            <div class="radio">
-                                <label for="kebap">                                
-                                    <input type="radio" value="3" onclick="getVote(this.value)">
-                                    Kebap
-                                </label>
-                            </div>
-                            <div class="radio">
-                                <label for="schnitzel">                                
-                                    <input type="radio" value="4" onclick="getVote(this.value)">
-                                    Schnitzel
-                                </label>
-                            </div>
-                        </form>
+                        <div id="poll" style="padding-left: 25px; padding-right: 25px;">
+                            {if $voteStatus == '1'}
+                                {include 'voteBlock.tpl'}
+                            {else}
+                            <form>
+                                <div class="radio">
+                                    <label for="noodles">                                
+                                        <input type="radio" value="1" onclick="getVote(this.value)">
+                                        Noodles
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label for="pizza">                                
+                                        <input type="radio" value="2" onclick="getVote(this.value)">
+                                        Pizza
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label for="kebap">                                
+                                        <input type="radio" value="3" onclick="getVote(this.value)">
+                                        Kebap
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label for="schnitzel">                                
+                                        <input type="radio" value="4" onclick="getVote(this.value)">
+                                        Schnitzel
+                                    </label>
+                                </div>
+                            </form>
+                            {/if}
+                        </div>
                     </div>
                 </div>
+                {/nocache}
             </div>
             <div class="row">
                 <div class="col-md-12" style="text-align: center;">

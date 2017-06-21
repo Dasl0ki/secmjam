@@ -73,3 +73,36 @@ function checkAfford($fullprice, $userid) {
         return FALSE;
     }
 }
+
+function getPollVotes() {
+    $filename = "config/poll_result.txt";
+    $content = file($filename);
+    
+    $array = explode("||", $content[0]);
+    $vote = array(
+        'noodles' => $array[0],
+        'pizza' => $array[1],
+        'kebap' => $array[2],
+        'schnitzel' => $array[3]
+    );
+    
+    return $vote;
+}
+
+function updateVotes($vote) {
+    $filename = "config/poll_result.txt";
+    $insertvote = $vote['noodles']."||".$vote['pizza']."||".$vote['kebap']."||".$vote['schnitzel'];
+    $fp = fopen($filename,"w");
+    fputs($fp,$insertvote);
+    fclose($fp);
+} 
+
+function getVotePercent($vote) {
+    $percent = array(
+        'noodles' => (100*round($vote['noodles']/($vote['noodles']+$vote['pizza']+$vote['kebap']+$vote['schnitzel']),2)),
+        'pizza' => (100*round($vote['pizza']/($vote['noodles']+$vote['pizza']+$vote['kebap']+$vote['schnitzel']),2)),
+        'kebap' => (100*round($vote['kebap']/($vote['noodles']+$vote['pizza']+$vote['kebap']+$vote['schnitzel']),2)),
+        'schnitzel' => (100*round($vote['schnitzel']/($vote['noodles']+$vote['pizza']+$vote['kebap']+$vote['schnitzel']),2))
+    );
+    return $percent;
+}
