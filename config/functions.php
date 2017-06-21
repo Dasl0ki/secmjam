@@ -106,3 +106,62 @@ function getVotePercent($vote) {
     );
     return $percent;
 }
+
+function unlockOrder($dn) {
+    global $mysqli;
+    $update_lock = "UPDATE deliverys SET locked='0' WHERE delivery_number = '$dn'";
+    $mysqli->query($update_lock);
+}
+
+function lastOrders($id) {
+    global $mysqli;
+    $select_user_delivery = 'SELECT * FROM deliverys WHERE userid = '.$id.' AND status = 1 GROUP BY delivery_number ORDER BY id DESC LIMIT 10';
+    $query = $mysqli->query($select_user_delivery);
+    $orders = array();
+    while ($row = $query->fetch_object()) {
+        $date_output = new DateTime();
+        $orders[] = array(
+            'dn' => $row->delivery_number,
+            'owner' => $row->owner,
+            'date' => $date_output->setTimestamp($row->delivery_number)->format('d.m.Y'),
+            'category' => $row->category
+        );
+    }
+    
+    return $orders;
+}
+
+function getDeliverys($dn) {
+    global $mysqli;
+    $deliverys = array();
+    $select = 'SELECT * FROM deliverys WHERE delivery_number = '.$dn.' ORDER BY CAST(delivery_text AS DECIMAL), sauce';    
+    $query = $mysqli->query($select);
+    while($row = $query->fetch_assoc()) {
+        $userData = getUserData($row['userid']);
+        $delivery = getDeliveryText($row['delivery_text']);
+        $deliverys[] = array(
+            'fullname' => $userData['firstname'].' '.$userData['lastname'],
+            'delivery' => $delivery['sub_category'].' '.$delivery['item'],
+            'size' => $delivery['size'],
+            'extra' => $row['sauce'],
+            'price' => $delivery['prize']
+        );
+    }
+    return $deliverys;
+}
+
+function getUserData($id) {
+    global $mysqli;
+    $select = 'SELECT * FROM login WHERE id = '.$id;
+    $query = $mysqli->query($select);
+    
+    return $query->fetch_assoc();    
+}
+
+function getDeliveryText($id) {
+    global $mysqli;
+    $select = 'SELECT * FROM menue WHERE id = '.$id;
+    $query = $mysqli->query($select);
+    
+    return $query->fetch_assoc();
+}

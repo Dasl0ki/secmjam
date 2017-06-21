@@ -125,7 +125,7 @@ if(isset($_SESSION["user"])) {
             <a href="http://sec-mjam.loki-net.at">SEC-Mjam</a>';
         }
         foreach ($receiver_arr as $receiver) {
-            mail($receiver, $betreff, $text, implode("\r\n", $headers));
+            //mail($receiver, $betreff, $text, implode("\r\n", $headers));
         }
     }
     echo '<meta http-equiv="refresh" content="3; URL=overview.php?dn='. $order .'&owner='. $owner .'" />' . "\n";
