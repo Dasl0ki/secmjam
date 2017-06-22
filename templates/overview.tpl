@@ -13,23 +13,33 @@
         <link rel="shortcut icon" href="/img/favicon/favicon.ico">
         <meta name="msapplication-config" content="/img/favicon/browserconfig.xml">
         <meta name="theme-color" content="#ffffff">
-        <script src="css/less.min.js" type="text/javascript" /></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     </head>
     <body style="margin-top: 5px;">
+        {nocache}
         <div class="container">
             {include 'nav.tpl'}
-            <form action="create_order.php" method="post">
-                    <input type="hidden" name="userid" value="{$session_userid}">
-                    <input class="btn btn-primary" type="submit" value="Neue Bestellung anlegen">
-            </form>
+            {if $openOrders != NULL}
+                {foreach item=order from=$openOrders}
+                    <a href="overview.php?dn={$order.dn}">
+                        {if $order.locked == 1}
+                            <span class="glyphicon glyphicon-lock"></span>
+                        {/if}
+                        {$order.date_output} - {$order.category|ucfirst} - {$order.ownerFullname}
+                    </a><br>
+                {/foreach}
+            {/if}
+            <br>
+            <a href="create_order.php" class="btn btn-primary">Neue Bestellung anlegen</a>
+            <br>
             <br>
             Meine letzten 10 Abgeschlossenen Bestellungen:<br><br>
             {foreach item=order from=$orders}
-                <a href='overview.php?dn={$order.dn}&owner={$order.owner}'>{$order.date} - {$order.category|ucfirst}</a><br>
+                <a href='overview.php?dn={$order.dn}'>{$order.date} - {$order.category|ucfirst}</a><br>
             {/foreach}
         </div>
+        {/nocache}
     </body>
 </html>

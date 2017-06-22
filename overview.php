@@ -17,14 +17,24 @@ $smarty->assign('current_site', substr($_SERVER['SCRIPT_NAME'],1));
 
 if(isset($_SESSION["user"])) {
     $dn = filter_input(INPUT_GET, 'dn', FILTER_SANITIZE_SPECIAL_CHARS);
-    $do = filter_input(INPUT_GET, 'do', FILTER_SANITIZE_SPECIAL_CHARS);    
+    $do = filter_input(INPUT_GET, 'do', FILTER_SANITIZE_SPECIAL_CHARS);
     
     /* Overview - Unlock Order - Start */
     if($dn != NULL AND $do != NULL) {
-        if($do == "unlock" and $_SESSION["user"]["id"] == $owner) {
+        $delivery = getDeliverys($dn);
+        if($do == "unlock" AND $_SESSION["user"]["id"] == $delivery[0]['owner']) {
             unlockOrder($dn);
-            echo "Bestellung entsperrt";
-        } else {
+        }
+        elseif($do == 'lock' AND $_SESSION["user"]["id"] == $delivery[0]['owner']) {
+            lockOrder($dn);
+        }
+        elseif($do == 'close' AND $_SESSION["user"]["id"] == $delivery[0]['owner']) {
+            $helper = filter_input(INPUT_POST, 'helper', FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY);
+            $category = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_SPECIAL_CHARS);
+            closeOrder($dn, $helper, $category, $delivery[0]['owner']);
+            header('Location: overview.php?dn='.$dn);
+        }
+        else {
             echo "Insufficient rights";
         }
     }
@@ -32,23 +42,8 @@ if(isset($_SESSION["user"])) {
     
     /* Overview Landing - Start*/
     if ($dn == NULL) {
-        $select_deliverys = "SELECT * FROM deliverys WHERE status != '1' GROUP BY delivery_number";
-        $query = $mysqli->query($select_deliverys);
-        while ($row = $query->fetch_object()) {
-            $owner = $row->owner;
-            $select_owner_name = "SELECT * FROM login WHERE id = '$owner'";
-            $query_owner = $mysqli->query($select_owner_name);
-            while ($row_owner = $query_owner->fetch_object()) {
-                $owner_fn = $row_owner->firstname;
-                $owner_ln = $row_owner->lastname;
-            }
-            $owner_fullname = $owner_fn . " " . $owner_ln;
-            $category = ucfirst($row->category);
-            $date = new DateTime();
-            $date_output = $date->setTimestamp($row->delivery_number)->format('d.m.Y');
-            echo '<a href="overview.php?dn=' . $row->delivery_number . '&owner=' . $row->owner . '">' . $date_output . ' - ' . $category . ' - ' .  $owner_fullname . '</a><br>';
-        }
         
+        $smarty->assign('openOrders', getOpenOrders());
         $smarty->assign('orders', lastOrders($_SESSION["user"]["id"]));
         $smarty->display('overview.tpl');
 		
@@ -57,9 +52,7 @@ if(isset($_SESSION["user"])) {
     
     /* Overview Order - Start */
     if ($dn != NULL) {
-        $date_display = new DateTime();        
-        
-        
+        $date_display = new DateTime();
         
 	$smarty->assign('date_display', $date_display->setTimestamp($dn)->format('d.m.Y'));
                
@@ -70,14 +63,30 @@ if(isset($_SESSION["user"])) {
         $query = $mysqli->query($select_dn);
         $owner = $query->fetch_object()->owner;
         $query->data_seek(0);
-        $jq_cat = $query->fetch_object()->category; //check category for jQuery
+        $category = $query->fetch_object()->category; //check category for jQuery
         $query->data_seek(0); //reset pointer for while-loop        
         
         $ownerData = getUserData($owner);
+        $helperArray = getHelper();
         
+        $total = total($dn);
+        $totalSum = 0;
+        foreach ($total as $row) {
+            $totalSum = $totalSum + $row['total'];
+        }
+        
+        $smarty->assign('dn', $dn);
+        $smarty->assign('sessionUser', $_SESSION['user']['id']);
+        $smarty->assign('total', $total);
+        $smarty->assign('totalSum', $totalSum);
+        $smarty->assign('totalItems', totalItems($dn));
         $smarty->assign('deliverys', getDeliverys($dn));
+        $smarty->assign('ownerID', $owner);
         $smarty->assign('ownerFullName', $ownerData['firstname'] . " " . $ownerData['lastname']);
-        $smarty->assign('jq_cat', $jq_cat);
+        $smarty->assign('category', $category);
+        $smarty->assign('helperArray', $helperArray);
+        $smarty->assign('to', floor(count($helperArray)/10));
+        $smarty->assign('col', 12/ceil(count($helperArray)/10));
         
         $smarty->display('view_order.tpl');
     /* Overview Order - End */

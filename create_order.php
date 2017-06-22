@@ -10,6 +10,10 @@ if($_SESSION["user"]["id"] == "1") {
 	error_reporting(E_ALL | E_STRICT);
 	mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 }
+
+$smarty = new Smarty_mjam();
+$smarty->assign('current_site', substr($_SERVER['SCRIPT_NAME'],1));
+
 if(isset($_SESSION["user"])) {
 	?>
     <head>
@@ -186,6 +190,8 @@ if(isset($_SESSION["user"])) {
 		</body>
 		<?php
 	}
+        $smarty->assign('userBalance', checkBalance($_SESSION['user']['id']));
+        $smarty->display('create_order.tpl');
 } else {
     echo 'Session abgelaufen. Bitte neu <a href="index.php">einloggen</a>';
 }

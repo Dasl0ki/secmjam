@@ -4,7 +4,7 @@
     <div class="col-md-12">
         <ul class="nav nav-tabs hidden-xs hidden-sm" style="margin-bottom: 20px;">
             <li {if $current_site == 'main.php'}class="active"{/if}><a href="main.php">Home</a></li>
-            <li {if $current_site == 'overview.php'}class="active"{/if}><a href="overview.php">Übersicht</a></li>
+            <li {if $current_site == 'overview.php' OR $current_site == 'create_order.php'}class="active"{/if}><a href="overview.php">Übersicht</a></li>
             <li {if $current_site == 'user_settings.php'}class="active"{/if}><a href="user_settings.php">Einstellungen</a></li>
             <li {if $current_site == 'highscore.php'}class="active"{/if}><a href="highscore.php">Highscore</a></li>
             <li {if $current_site == 'stats.php'}class="active"{/if}><a href="stats.php">Statistik</a></li>
