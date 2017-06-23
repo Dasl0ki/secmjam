@@ -301,3 +301,18 @@ function getHelper() {
     
     return $helper;
 }
+
+function getMenue($category) {
+    global $mysqli;
+    $menue = array();
+    $select = 'SELECT * FROM menue WHERE category = ? ORDER BY sub_category ASC';
+    $stmt = $mysqli->prepare($select);
+    $stmt->bind_param('s', $category);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+        $menue[] = $row;
+    }
+
+    return $menue;
+}
