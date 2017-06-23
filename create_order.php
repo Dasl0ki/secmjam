@@ -12,22 +12,52 @@ if($_SESSION["user"]["id"] == "1") {
 }
 
 $smarty = new Smarty_mjam();
+$smarty->assign('current_site', substr($_SERVER['SCRIPT_NAME'], 1));
+
 
 if(isset($_SESSION["user"])) {
     $page = filter_input(INPUT_GET, 'page', FILTER_SANITIZE_SPECIAL_CHARS);
     $smarty->assign('userid', $_SESSION['user']['id']);
+    $smarty->assign('page', $page);
+    $smarty->assign('userBalance', checkBalance($_SESSION['user']['id']));
 
-    if($page == 'menue') {
-        $category = filter_input(INPUT_POST, 'food', FILTER_SANITIZE_SPECIAL_CHARS);
-        $smarty->assign('category', $category);
-        $smarty->assign('menue', getMenue($category));
-        $smarty->assign('owner', $_SESSION['user']['id']);
-        $smarty->assign('dn', date('U', time()));
+    switch ($page) {
+        case 'menue':
+            $category = filter_input(INPUT_POST, 'food', FILTER_SANITIZE_SPECIAL_CHARS);
+            $smarty->assign('category', $category);
+            $smarty->assign('menue', getMenue($category));
+            $smarty->assign('owner', $_SESSION['user']['id']);
+            $smarty->assign('dn', date('U', time()));
+            break;
+        case 'save':
+            $food_id = filter_input(INPUT_POST, 'foodid', FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY);
+
+            if($food_id == NULL) {
+                echo "Keine Speise ausgewählt<br>";
+                echo '<a href="javascript:history.back()">Zurück</a>';
+                die;
+            } else {
+                $order = array(
+                    'new_order' => filter_input(INPUT_POST, 'new', FILTER_SANITIZE_SPECIAL_CHARS),
+                    'userid' => filter_input(INPUT_POST, 'userid', FILTER_SANITIZE_SPECIAL_CHARS),
+                    'food' => filter_input(INPUT_POST, 'foodid', FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY),
+                    'amount' => filter_input(INPUT_POST, 'amount', FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY),
+                    'sauce' => filter_input(INPUT_POST, 'sauce', FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY),
+                    'order' => filter_input(INPUT_POST, 'dn', FILTER_SANITIZE_SPECIAL_CHARS),
+                    'category' => filter_input(INPUT_POST, 'category', FILTER_SANITIZE_SPECIAL_CHARS),
+                    'owner' => filter_input(INPUT_POST, 'owner', FILTER_SANITIZE_SPECIAL_CHARS),
+                    'mail_check' => filter_input(INPUT_POST, 'mail_check', FILTER_SANITIZE_SPECIAL_CHARS),
+                    'autolock_check' => filter_input(INPUT_POST, 'check', FILTER_SANITIZE_SPECIAL_CHARS),
+                    'autolock_time' => filter_input(INPUT_POST, 'autolock', FILTER_SANITIZE_SPECIAL_CHARS)
+                );
+
+                saveOrder($order);
+
+                Echo 'erfolgreich';
+            }
+            break;
     }
 
-    $smarty->assign('userBalance', checkBalance($_SESSION['user']['id']));
-    $smarty->assign('current_site', substr($_SERVER['SCRIPT_NAME'],1));
-    $smarty->assign('page', $page);
     $smarty->display('create_order.tpl');
 } else {
     echo 'Session abgelaufen. Bitte neu <a href="index.php">einloggen</a>';

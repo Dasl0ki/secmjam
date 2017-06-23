@@ -316,3 +316,38 @@ function getMenue($category) {
 
     return $menue;
 }
+
+function saveOrder($order) {
+    global $mysqli;
+    $now = new DateTime('now');
+    $extras = '';
+    $insert_timestamp = $now->format('Y-m-d H:i:s');
+    if ($order['new_order'] == "1") {
+        if($order['autolock_check'] == "1") {
+            $autolock_time = new DateTime();
+            $autolock_time->setTimestamp($order['dn']);
+            $autolock_time->setTime(substr($order['autolock_time'],0,-2), substr($order['autolock_time'],-2));
+            $autolock = $autolock_time->format('Y-m-d H:i:s');
+        } else {
+            $autolock = null;
+        }
+    } else {
+        $select_autolock = 'SELECT * FROM deliverys WHERE delivery_number = '.$order['dn'];
+        $query_autolock = $mysqli->query($select_autolock);
+        $autolock = $query_autolock->fetch_object()->autolock;
+    }
+
+    foreach ($order['food'] as $item) {
+        for ($i = 1; $i <= $order['amount'][$item]; $i++) {
+            foreach($order['sauce'][$item] as $extra) {
+                $extras .= '|'.$extra;
+            }
+            $extras = substr($extras,1);
+            $insert = 'INSERT INTO deliverys (delivery_number, delivery_text, userid, sauce, owner, category, autolock, timestamp) '
+                .'VALUES ('.$order['dn'].', '.$item.', '.$order['userid'].', '.$extras.', '.$order['owner'].', '.$order['category'].', '
+                .$autolock.', '.$insert_timestamp.')';
+            $mysqli->query($insert);
+            $extras = "";
+        }
+    }
+}

@@ -11,4 +11,12 @@ if($_SESSION["user"]["id"] == "1") {
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 }
 
-closeOrder('1495441963', $helper = array(0 => 2, 1 => 5), 'kebap', '1');
+$smarty = new Smarty_mjam();
+
+$smarty->assign('category', 'kebap');
+$smarty->assign('page', 'menue');
+$smarty->assign('menue', getMenue('kebap'));
+$smarty->assign('owner', '1');
+$smarty->assign('dn', date('U', time()));
+
+$smarty->display('create_order.tpl');

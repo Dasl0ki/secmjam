@@ -34,7 +34,7 @@ if(isset($_SESSION["user"])) {
     $food = filter_input(INPUT_POST, 'foodid', FILTER_SANITIZE_SPECIAL_CHARS,FILTER_REQUIRE_ARRAY);
     $sauce = filter_input(INPUT_POST, 'sauce', FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY);
     $order = filter_input(INPUT_POST, 'dn', FILTER_SANITIZE_SPECIAL_CHARS);
-    $category = filter_input(INPUT_POST, 'cat', FILTER_SANITIZE_SPECIAL_CHARS);
+    $category = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_SPECIAL_CHARS);
     $owner = filter_input(INPUT_POST, 'owner', FILTER_SANITIZE_SPECIAL_CHARS);
     $mail_check = filter_input(INPUT_POST, 'mail_check', FILTER_SANITIZE_SPECIAL_CHARS);
     $autolock_check = filter_input(INPUT_POST, 'check', FILTER_SANITIZE_SPECIAL_CHARS);
