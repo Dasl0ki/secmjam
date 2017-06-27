@@ -231,6 +231,38 @@ function getOpenOrders() {
     return $orders;
 }
 
+function getUnlockedOrders() {
+    global $mysqli;
+    $select_deliverys = "SELECT * FROM deliverys WHERE status != '1' AND locked != '1' GROUP BY delivery_number";
+    $query = $mysqli->query($select_deliverys);
+    $orders = array();
+    while ($row = $query->fetch_assoc()) {
+        $date = new DateTime();
+        $date_output = $date->setTimestamp($row['delivery_number'])->format('d.m.Y');
+        $owner = getUserData($row['owner']);
+        $orders[] = array(
+            'dn' => $row['delivery_number'],
+            'date_output' => $date_output,
+            'category' => $row['category'],
+            'ownerFullname' => $owner['firstname'].' '.$owner['lastname'],
+            'locked' => $row['locked']
+        );
+    }
+
+    return $orders;
+}
+
+function getSingleOrder($dn) {
+    global $mysqli;
+    $select = "SELECT * FROM deliverys WHERE delivery_number = ?";
+    $stmt = $mysqli->prepare($select);
+    $stmt->bind_param('s', $dn);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    return $result->fetch_assoc();
+}
+
 function total($dn) {
     global $mysqli;
     $userids = array();
@@ -332,21 +364,23 @@ function saveOrder($order) {
             $autolock = null;
         }
     } else {
-        $select_autolock = 'SELECT * FROM deliverys WHERE delivery_number = '.$order['dn'];
-        $query_autolock = $mysqli->query($select_autolock);
-        $autolock = $query_autolock->fetch_object()->autolock;
+        if($order['autolock_time'] == '0000-00-00 00:00:00') {
+            $autolock = null;
+        } else {
+            $autolock = $order['autolock_time'];
+        }
     }
 
     foreach ($order['food'] as $item) {
         for ($i = 1; $i <= $order['amount'][$item]; $i++) {
-            foreach($order['sauce'][$item] as $extra) {
-                $extras .= '|'.$extra;
+            foreach ($order['sauce'][$item] as $extra) {
+                $extras .= '|' . $extra;
             }
             $extras = substr($extras,1);
-            $insert = 'INSERT INTO deliverys (delivery_number, delivery_text, userid, sauce, owner, category, autolock, timestamp) '
-                .'VALUES ('.$order['dn'].', '.$item.', '.$order['userid'].', '.$extras.', '.$order['owner'].', '.$order['category'].', '
-                .$autolock.', '.$insert_timestamp.')';
-            $mysqli->query($insert);
+            $insert = 'INSERT INTO deliverys (delivery_number, delivery_text, userid, sauce, owner, category, autolock, timestamp) VALUES (?,?,?,?,?,?,?,?)';
+            $stmt = $mysqli->prepare($insert);
+            $stmt->bind_param('ssssssss', $order['dn'], $item, $order['userid'], $extras, $order['owner'], $order['category'], $autolock, $insert_timestamp);
+            $stmt->execute();
             $extras = "";
         }
     }

@@ -15,6 +15,7 @@ if($_SESSION["user"]["id"] == "1") {
 
 $smarty = new Smarty_mjam();
 $smarty->assign('current_site', substr($_SERVER['SCRIPT_NAME'],1));
+$smarty->assign('countUnlockedOrders', count(getUnlockedOrders()));
 
 if(isset($_SESSION["user"])) {
     $vote = getPollVotes();

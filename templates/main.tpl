@@ -30,6 +30,7 @@
         </script>
     </head>
     <body style="margin-top: 5px;">
+        {nocache}
         <div class="container">
             {include 'nav.tpl'}
             <div class="row">
@@ -87,5 +88,6 @@
                 </div>
             </div>
         </div>
+        {/nocache}
     </body>
 </html>

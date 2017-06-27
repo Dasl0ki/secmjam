@@ -14,6 +14,7 @@ if($_SESSION["user"]["id"] == "1") {
 
 $smarty = new Smarty_mjam();
 $smarty->assign('current_site', substr($_SERVER['SCRIPT_NAME'],1));
+$smarty->assign('countUnlockedOrders', count(getUnlockedOrders()));
 
 if(isset($_SESSION["user"])) {
     $dn = filter_input(INPUT_GET, 'dn', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -24,9 +25,11 @@ if(isset($_SESSION["user"])) {
         $delivery = getDeliverys($dn);
         if($do == "unlock" AND $_SESSION["user"]["id"] == $delivery[0]['owner']) {
             unlockOrder($dn);
+            $smarty->assign('countUnlockedOrders', count(getUnlockedOrders()));
         }
         elseif($do == 'lock' AND $_SESSION["user"]["id"] == $delivery[0]['owner']) {
             lockOrder($dn);
+            $smarty->assign('countUnlockedOrders', count(getUnlockedOrders()));
         }
         elseif($do == 'close' AND $_SESSION["user"]["id"] == $delivery[0]['owner']) {
             $helper = filter_input(INPUT_POST, 'helper', FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY);
@@ -42,7 +45,8 @@ if(isset($_SESSION["user"])) {
     
     /* Overview Landing - Start*/
     if ($dn == NULL) {
-        
+
+
         $smarty->assign('openOrders', getOpenOrders());
         $smarty->assign('orders', lastOrders($_SESSION["user"]["id"]));
         $smarty->display('overview.tpl');
@@ -54,7 +58,7 @@ if(isset($_SESSION["user"])) {
     if ($dn != NULL) {
         $date_display = new DateTime();
         
-	$smarty->assign('date_display', $date_display->setTimestamp($dn)->format('d.m.Y'));
+	    $smarty->assign('date_display', $date_display->setTimestamp($dn)->format('d.m.Y'));
                
 
         $cost_array = array();
@@ -87,7 +91,7 @@ if(isset($_SESSION["user"])) {
         $smarty->assign('helperArray', $helperArray);
         $smarty->assign('to', floor(count($helperArray)/10));
         $smarty->assign('col', 12/ceil(count($helperArray)/10));
-        
+
         $smarty->display('view_order.tpl');
     /* Overview Order - End */
     }
