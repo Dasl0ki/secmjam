@@ -69,6 +69,6 @@ if(isset($_SESSION["user"])) {
 
     $smarty->display('menue.tpl');
 } else {
-    echo 'Session abgelaufen. Bitte neu <a href="index.php">einloggen</a>';
+    $smarty->display('timeout.tpl');
 }
 $mysqli->close();

@@ -3,6 +3,13 @@
     <link rel="stylesheet" href="config/style.css">
 </head>
 <body>
+    03.07.2017 v0.3:
+    <ul>
+        <li>Redesign der kompletten Seite</li>
+        <li>Redesign des Quellcodes</li>
+        <li>Responsive Design für Mobile Devices</li>
+        <li>Punktesystem für Highscores</li>
+    </ul>
     19.04.2017 v0.2.3:
     <ul>
         <li>Vorbereitung Guthaben System</li>

@@ -13,10 +13,4 @@ if($_SESSION["user"]["id"] == "1") {
 
 $smarty = new Smarty_mjam();
 
-$smarty->assign('category', 'kebap');
-$smarty->assign('page', 'menue');
-$smarty->assign('menue', getMenue('kebap'));
-$smarty->assign('owner', '1');
-$smarty->assign('dn', date('U', time()));
-
-$smarty->display('create_order.tpl');
+$smarty->display('timeout.tpl');

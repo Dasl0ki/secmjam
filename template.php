@@ -18,6 +18,6 @@ $smarty->assign('countUnlockedOrders', count(getUnlockedOrders()));
 if(isset($_SESSION["user"])) {
     
 } else {
-    echo 'Session abgelaufen. Bitte neu <a href="index.php">einloggen</a>';
+    $smarty->display('timeout.tpl');
 }
 $mysqli->close();

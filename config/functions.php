@@ -385,3 +385,59 @@ function saveOrder($order) {
         }
     }
 }
+
+function changePWD($user) {
+    global $mysqli;
+    $userData = getUserData($user['id']);
+    if($userData['pwd'] == $user['pwd_old']) {
+        if ($user['pwd_new'] == $user['pwd2']) {
+            $update = 'UPDATE login SET pwd = ? WHERE id = ?';
+            $stmt = $mysqli->prepare($update);
+            $stmt->bind_param('ss', $user['pwd_new'], $user['id']);
+            $stmt->execute();
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    } else {
+        return FALSE;
+    }
+}
+
+function getHighscore() {
+    global $mysqli;
+    $highscore = array();
+    $select = 'SELECT * FROM login WHERE active = TRUE ORDER BY points DESC';
+    $query = $mysqli->query($select);
+    while($row = $query->fetch_assoc()) {
+        $sumOrders = getOrderCount($row['id']);
+        $sumDeliverys = getDeliverySum();
+        $highscore[] = array(
+            'id' => $row['id'],
+            'fullname' => $row['firstname'].' '.$row['lastname'],
+            'points' => $row['points'],
+            'orders' => $sumOrders,
+            'quote' => round(($sumOrders/$sumDeliverys)*100,2)
+        );
+    }
+
+    return $highscore;
+}
+
+function getOrderCount($id) {
+    global $mysqli;
+    $select = 'SELECT count(DISTINCT delivery_number) FROM deliverys WHERE userid = '.$id;
+    $query = $mysqli->query($select);
+    $result = $query->fetch_assoc();
+
+    return $result['count(DISTINCT delivery_number)'];
+}
+
+function getDeliverySum() {
+    global $mysqli;
+    $select = 'SELECT count(DISTINCT delivery_number) FROM deliverys';
+    $query = $mysqli->query($select);
+    $result = $query->fetch_assoc();
+
+    return $result['count(DISTINCT delivery_number)'];
+}

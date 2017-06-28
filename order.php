@@ -130,6 +130,6 @@ if(isset($_SESSION["user"])) {
     }
     echo '<meta http-equiv="refresh" content="3; URL=overview.php?dn='. $order .'&owner='. $owner .'" />' . "\n";
 } else {
-    echo 'Session abgelaufen. Bitte neu <a href="index.php">einloggen</a>';
+    $smarty->display('timeout.tpl');
 }
 $mysqli->close();

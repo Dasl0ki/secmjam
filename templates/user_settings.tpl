@@ -57,10 +57,10 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <input type="submit" value="Speichern" class="btn btn-success btn-block">
+                                    <input type="submit" value="Speichern" class="btn btn-success btn-block" style="margin-top: 5px; margin-bottom: 5px;"">
                                 </div>
                                 <div class="col-md-6">
-                                    <a href="changepwd.php" class="btn btn-primary btn-block">Passwort ändern</a>
+                                    <a href="changepwd.php" class="btn btn-primary btn-block" style="margin-top: 5px; margin-bottom: 5px;">Passwort ändern</a>
                                 </div>
                             </div>
                         </form>

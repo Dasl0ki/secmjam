@@ -1,6 +1,7 @@
 <?php
 setlocale(LC_ALL, 'de_DE.utf8');
 require 'config/setup.php';
+require 'config/functions.php';
 require_once("config/config.php");
 require_once("config/db_cnx.php");
 $smarty = new Smarty_mjam();
@@ -10,6 +11,9 @@ if($_SESSION["user"]["id"] == "1") {
     error_reporting(E_ALL | E_STRICT);
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 }
+
+$smarty->assign('current_site', substr($_SERVER['SCRIPT_NAME'],1));
+$smarty->assign('countUnlockedOrders', count(getUnlockedOrders()));
 
 if(isset($_SESSION["user"])) {
     // Page Content comes here
@@ -93,7 +97,7 @@ if(isset($_SESSION["user"])) {
     }
     // Page Content ends here
 } else {
-    echo 'Session abgelaufen. Bitte neu <a href="index.php">einloggen</a>';
+    $smarty->display('timeout.tpl');
 }
 $mysqli->close();
 

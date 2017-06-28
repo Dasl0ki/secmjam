@@ -10,8 +10,12 @@ if($_SESSION["user"]["id"] == "1") {
     error_reporting(E_ALL | E_STRICT);
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 }
+
+$smarty = new Smarty_mjam();
+$smarty->assign('current_site', substr($_SERVER['SCRIPT_NAME'],1));
+$smarty->assign('countUnlockedOrders', count(getUnlockedOrders()));
+
 if(isset($_SESSION["user"])) {
-    // Page Content comes here
     $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_SPECIAL_CHARS);
     $owner = filter_input(INPUT_GET, 'owner', FILTER_SANITIZE_SPECIAL_CHARS);
     $dn = filter_input(INPUT_GET, 'dn', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -21,19 +25,11 @@ if(isset($_SESSION["user"])) {
     changeBalance($result['userid'], getPrice($result['delivery_text']));
     $storno = "DELETE FROM deliverys WHERE id = '$id'";
     $query = $mysqli->query($storno);
-    echo "Bestellung storniert";
-    echo '<meta http-equiv="refresh" content="3; URL=overview.php?dn='. $dn .'&owner='.$owner.'" />' . "\n";
-    ?>
-    <head>
-        <link rel="stylesheet" href="config/style.css">
-    </head>
-    <body>
-
-    </body>
-    <?php
-    // Page Content ends here
+    $smarty->assign('success', TRUE);
+    header("Refresh:2; url=overview.php?dn=".$dn);
+    $smarty->display('storno.tpl');
 } else {
-    echo 'Session abgelaufen. Bitte neu <a href="index.php">einloggen</a>';
+    $smarty->display('timeout.tpl');
 }
 $mysqli->close();
 ?>
