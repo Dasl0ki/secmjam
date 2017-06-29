@@ -358,7 +358,7 @@ function saveOrder($order) {
         if($order['autolock_check'] == "1") {
             $autolock_time = new DateTime();
             $autolock_time->setTimestamp($order['dn']);
-            $autolock_time->setTime(substr($order['autolock_time'],0,-2), substr($order['autolock_time'],-2));
+            $autolock_time->setTime(substr($order['autolock_time'],0,2), substr($order['autolock_time'],-2));
             $autolock = $autolock_time->format('Y-m-d H:i:s');
         } else {
             $autolock = null;
@@ -407,7 +407,7 @@ function changePWD($user) {
 function getHighscore() {
     global $mysqli;
     $highscore = array();
-    $select = 'SELECT * FROM login WHERE active = TRUE ORDER BY points DESC';
+    $select = 'SELECT * FROM login WHERE active = TRUE ORDER BY points DESC, lastname ASC';
     $query = $mysqli->query($select);
     while($row = $query->fetch_assoc()) {
         $sumOrders = getOrderCount($row['id']);
@@ -440,4 +440,39 @@ function getDeliverySum() {
     $result = $query->fetch_assoc();
 
     return $result['count(DISTINCT delivery_number)'];
+}
+
+function sendInfoMail($owner, $category, $autolock = FALSE, $time = '00:00') {
+    global $mysqli;
+    $headers = array();
+    $headers[] = "MIME-Version: 1.0";
+    $headers[] = "Content-Type: text/html; charset=UTF-8";
+    $headers[] = "From: SEC-Mjam <no-reply@loki-net.at>";
+    $headers[] = "Reply-To: SEC-Mjam <no-reply@loki-net.at>";
+    $headers[] = "Subject: Neue SEC-Mjam Bestellung";
+    $headers[] = "X-Mailer: PHP/".phpversion();
+    $select_receiver = "SELECT email FROM login WHERE notify = '1' AND active = TRUE";
+    $query = $mysqli->query($select_receiver);
+    $receiver_arr = array();
+    while ($row = $query->fetch_object()) {
+        $receiver_arr[] = $row->email;
+    }
+
+    $owner = getUserData($owner);
+    $ownerFullName = $owner['firstname'].' '.$owner['lastname'];
+
+    $betreff = "Neue SEC-Mjam Bestellung";
+    if($autolock == TRUE) {
+        $text = file_get_contents('mailTemplates/mailTime.html');
+        $text = str_replace('[time]', $time, $text);
+    } else {
+        $text = file_get_contents('mailTemplates/mailNoTime.html');
+    }
+
+    $text = str_replace('[name]', $ownerFullName, $text);
+    $text = str_replace('[mail_food]', ucfirst($category), $text);
+
+    foreach ($receiver_arr as $receiver) {
+        mail($receiver, $betreff, $text, implode("\r\n", $headers));
+    }
 }

@@ -48,15 +48,34 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                {assign var=extraOutput value=''}
                                 {foreach item=delivery from=$deliverys}
                                     <tr>
                                         <td>{$delivery.fullname}</td>
                                         <td>{$delivery.delivery}</td>
                                         <td>{$delivery.size}</td>
-                                        <td>{$delivery.extra}</td>
+                                        <td>
+                                            {if $category == 'schnitzel'}
+                                                {assign var=extras value='|'|explode:$delivery.extra}
+                                                {foreach item=extra from=$extras}
+                                                    {assign var=extraOutput value=$extraOutput|cat:"`$extra|ucfirst`, "}
+                                                {/foreach}
+                                                {$extraOutput|substr:0:-2}
+                                                {assign var=extraOutput value=''}
+                                            {elseif $category == 'kebap'}
+                                                {assign var=extras value='|'|explode:$delivery.extra}
+                                                {foreach item=extra from=$extras}
+                                                    {assign var=extraOutput value=$extraOutput|cat:"Ohne `$extra|ucfirst`, "}
+                                                {/foreach}
+                                                {$extraOutput|substr:0:-2}
+                                                {assign var=extraOutput value=''}
+                                            {else}
+                                                {$delivery.extra}
+                                            {/if}
+                                        </td>
                                         <td>€ {$delivery.price|number_format:2:",":"."}</td>
                                         <td>
-                                            {if $delivery.userid == $sessionUser}
+                                            {if $delivery.userid == $sessionUser AND $ownerID != $sessionUser}
                                                 <a href="storno.php?id={$delivery.id}">Storno</a>
                                             {/if}
                                         </td>

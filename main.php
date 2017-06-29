@@ -22,6 +22,7 @@ if(isset($_SESSION["user"])) {
     
     $smarty->assign('voteStatus', $_SESSION['user']['vote']);
     $smarty->assign('percent', getVotePercent($vote));
+    $smarty->assign('user', getUserData($_SESSION['user']['id']));
     
     $smarty->display('main.tpl');
 } else {

@@ -21,6 +21,7 @@ if(isset($_SESSION["user"])) {
     $smarty->assign('userid', $_SESSION['user']['id']);
     $smarty->assign('page', $page);
     $smarty->assign('userBalance', checkBalance($_SESSION['user']['id']));
+    $smarty->assign('success', FALSE);
 
     switch ($page) {
         case 'menue':
@@ -39,6 +40,7 @@ if(isset($_SESSION["user"])) {
                 die;
             } else {
                 $order = array(
+                    'dn' => filter_input(INPUT_POST, 'dn', FILTER_SANITIZE_SPECIAL_CHARS),
                     'new_order' => filter_input(INPUT_POST, 'new', FILTER_SANITIZE_SPECIAL_CHARS),
                     'userid' => filter_input(INPUT_POST, 'userid', FILTER_SANITIZE_SPECIAL_CHARS),
                     'food' => filter_input(INPUT_POST, 'foodid', FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY),
@@ -54,7 +56,15 @@ if(isset($_SESSION["user"])) {
 
                 saveOrder($order);
 
-                Echo 'erfolgreich';
+                if($order['new_order'] == '1' AND $order['mail_check'] == '1') {
+                    if($order['autolock_check'] == '1') {
+                        sendInfoMail($order['owner'], $order['category'], TRUE, $order['autolock_time']);
+                    } else {
+                        sendInfoMail($order['owner'], $order['category']);
+                    }
+                }
+                $smarty->assign('success', TRUE);
+                header('Refresh:2 url=overview.php?dn='.$order['dn']);
             }
             break;
     }

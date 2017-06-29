@@ -27,6 +27,8 @@ if(isset($_SESSION["user"])) {
     $smarty->assign('sessionUserID', $_SESSION['user']['id']);
     $smarty->assign('page', $page);
     $smarty->assign('orders', $orders);
+    $smarty->assign('success', FALSE);
+    $smarty->assign('error', FALSE);
 
     switch ($page) {
         case 'menue':
@@ -63,6 +65,8 @@ if(isset($_SESSION["user"])) {
 
                 //var_dump($order);
                 saveOrder($order);
+                $smarty->assign('success', TRUE);
+                header('Refresh:2, url=overview.php?dn='.$singleOrder['delivery_number']);
             }
             break;
     }

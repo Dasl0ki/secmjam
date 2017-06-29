@@ -26,7 +26,7 @@ if(isset($_SESSION["user"])) {
     $storno = "DELETE FROM deliverys WHERE id = '$id'";
     $query = $mysqli->query($storno);
     $smarty->assign('success', TRUE);
-    header("Refresh:2; url=overview.php?dn=".$dn);
+    header('Refresh:2; url=overview.php?dn='.$result['delivery_number']);
     $smarty->display('storno.tpl');
 } else {
     $smarty->display('timeout.tpl');
