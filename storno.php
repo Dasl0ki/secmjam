@@ -3,6 +3,7 @@ require 'config/setup.php';
 require 'config/functions.php';
 require_once("config/config.php");
 require_once("config/db_cnx.php");
+forceSSL();
 header('Content-Type: text/html; charset=utf-8');
 session_start();
 if($_SESSION["user"]["id"] == "1") {
@@ -22,7 +23,7 @@ if(isset($_SESSION["user"])) {
     $select_food = 'SELECT * FROM deliverys WHERE id = '.$id;
     $query_food = $mysqli->query($select_food);
     $result = $query_food->fetch_assoc();
-    changeBalance($result['userid'], getPrice($result['delivery_text']));
+    //changeBalance($result['userid'], getPrice($result['delivery_text']));
     $storno = "DELETE FROM deliverys WHERE id = '$id'";
     $query = $mysqli->query($storno);
     $smarty->assign('success', TRUE);

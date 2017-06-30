@@ -5,6 +5,7 @@
  * Date: 01.04.2016
  * Time: 09:54
  */
+forceSSL();
 require_once("config/config.php");
 require_once("config/db_cnx.php");
 require 'config/setup.php';

@@ -7,7 +7,12 @@
  */
 require_once("config/config.php");
 require_once("config/db_cnx.php");
+require 'config/functions.php';
+require 'config/setup.php';
+forceSSL();
 header('Content-Type: text/html; charset=utf-8');
+
+$smarty = new Smarty_mjam();
 session_start();
 if($_SESSION["user"]["id"] == "1") {
     ini_set("display_errors", 1);
@@ -15,98 +20,71 @@ if($_SESSION["user"]["id"] == "1") {
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 }
 
-if(isset($_GET["page"])) {
-    if ($_GET["page"] == "register") {
-        $captcha = $_POST["g-recaptcha-response"];
+$page = filter_input(INPUT_GET, 'page', FILTER_SANITIZE_SPECIAL_CHARS);
+$smarty->assign('page', $page);
+$smarty->assign('error_captcha', FALSE);
+$smarty->assign('error_user', FALSE);
+$smarty->assign('error_pwd', FALSE);
+$smarty->assign('error', FALSE);
+$smarty->assign('success', FALSE);
+
+if($page != NULL) {
+    if ($page == "register") {
+        $flag_captcha = FALSE;
+        $flag_user = FALSE;
+        $flag_pwd = FALSE;
+        $captcha = filter_input(INPUT_POST, 'g-recaptcha-response', FILTER_SANITIZE_SPECIAL_CHARS);
         $user = strtolower($_POST["user"]);
-        $email = $_POST["email"];
-        $firstname = ucfirst($_POST["firstname"]);
-        $lastname = ucfirst($_POST["lastname"]);
-        $pwd = md5($_POST["pwd"]);
-        $pwd2 = md5($_POST["pwd2"]);
+        $email = filter_input(INPUT_POST,'email', FILTER_SANITIZE_SPECIAL_CHARS);
+        $firstname = ucfirst(filter_input(INPUT_POST, 'firstname', FILTER_SANITIZE_SPECIAL_CHARS));
+        $lastname = ucfirst(filter_input(INPUT_POST, 'lastname', FILTER_SANITIZE_SPECIAL_CHARS));
+        $pwd = md5(filter_input(INPUT_POST, 'pwd', FILTER_SANITIZE_SPECIAL_CHARS));
+        $pwd2 = md5(filter_input(INPUT_POST,'pwd2', FILTER_SANITIZE_SPECIAL_CHARS));
 
         if (!$captcha) {
-            echo 'Bitte Captcha lösen<br><br>';
-            echo '<a href="register.php">Zurück</a>';
-            die;
+            $smarty->assign('error_captcha', TRUE);
+            $flag_captcha = TRUE;
         } else {
-            $captcha_response = json_decode(file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=" . $config['captcha']["secret_key"] . "&response=" . $captcha . "&remoteip=" . $_SERVER['REMOTE_ADDR']), true);
+            $captcha_response = json_decode(file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret="
+                . $config['captcha']["secret_key"] . "&response="
+                . $captcha . "&remoteip="
+                . $_SERVER['REMOTE_ADDR']), true);
             if ($captcha_response['success'] == false) {
-                echo 'Captcha Wrong<br><br>';
-                echo '<a href="register.php">Zurück</a>';
+                $smarty->assign('error_captcha', TRUE);
+                $flag_captcha = TRUE;
+            }
+        }
+
+        $select_users = "SELECT user FROM login";
+        $query_user = $mysqli->query($select_users);
+        while($row = $query_user->fetch_object()) {
+            if($row->user == $user) {
+                $smarty->assign('error_user', TRUE);
+                $flag_user = TRUE;
+            }
+        }
+
+        if ($pwd != $pwd2) {
+            $smarty->assign('error_pwd', TRUE);
+            $flag_pwd = TRUE;
+        }
+
+        if($flag_captcha == FALSE AND $flag_user == FALSE AND $flag_pwd == FALSE) {
+            $insert = "INSERT INTO login (user, firstname, lastname, email, pwd) VALUES (?, ?, ?, ?, ?)";
+            $stmt = $mysqli->prepare($insert);
+            $stmt->bind_param("sssss", $user, $firstname, $lastname, $email, $pwd);
+            if($stmt->execute()) {
+                //$stmt->execute();
+                $stmt->close();
+                $smarty->assign('success', TRUE);
+                $mysqli->close();
+                header('Refresh:2, url=index.php');
             } else {
-                $select_users = "SELECT user FROM login";
-                $query_user = $mysqli->query($select_users);
-                while($row = $query_user->fetch_object()) {
-                    if($row->user == $user) {
-                        echo "Username bereits vergeben<br>";
-                        echo '<a href="register.php">Zurück</a>';
-                        die;
-                    }
-                }
-                if ($pwd != $pwd2) {
-                    echo "Passwort stimmt nicht überein<br><br>";
-                    echo '<a href="register.php">Zurück</a>';
-                    die;
-                } else {
-                    $insert = "INSERT INTO login (user, firstname, lastname, email, pwd) VALUES (?, ?, ?, ?, ?)";
-                    $stmt = $mysqli->prepare($insert);
-                    $stmt->bind_param("sssss", $user, $firstname, $lastname, $email, $pwd);
-                    if($stmt->execute()) {
-                        //$stmt->execute();
-                        $stmt->close();
-                        echo 'Registrierung erfolreich. Zurück zum <a href="index.php">Login</a>';
-                        $mysqli->close();
-                        die;
-                    } else {
-                        echo 'Etwas ist schief gelaufen.';
-                        die;
-                    }
-                }
+                $smarty->assign('error', TRUE);
             }
         }
     }
 }
-?>
-<html>
-    <head>
-        <script src='https://www.google.com/recaptcha/api.js'></script>
-    </head>
-    <body>
-        <form method="post" action="register.php?page=register">
-            <table>
-                <tr>
-                    <td>User:</td>
-                    <td><input type="text" size="20" name="user"></td>
-                </tr>
-                <tr>
-                    <td>E-Mail:</td>
-                    <td><input type="text" size="20" name="email"></td>
-                </tr>
-                <tr>
-                    <td>Vorname:</td>
-                    <td><input type="text" size="20" name="firstname"></td>
-                </tr>
-                <tr>
-                    <td>Nachname:</td>
-                    <td><input type="text" size="20" name="lastname"></td>
-                </tr>
-                <tr>
-                    <td>Passwort:</td>
-                    <td><input type="password" size="20" name="pwd"></td>
-                </tr>
-                <tr>
-                    <td>Passwort bestätigen:</td>
-                    <td><input type="password" size="20" name="pwd2"></td>
-                </tr>
-                <tr>
-                    <td colspan="2"><div class="g-recaptcha" data-sitekey="6Le0SxwTAAAAAKxJsiY4VqGjZmmtTCLcgpswr4xv"></div></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><input type="submit" value="Absenden"></td>
-                </tr>
-            </table>
-        </form>
-    </body>
-</html>
+
+$smarty->display('register.tpl');
+

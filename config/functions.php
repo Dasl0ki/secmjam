@@ -1,4 +1,12 @@
 <?php
+function forceSSL() {
+    if($_SERVER["HTTPS"] != "on")
+    {
+        header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+        exit();
+    }
+}
+
 function doLogin($user, $pwd) {
     global $mysqli;
     $abfrage = "SELECT * FROM login WHERE user = ?";
@@ -98,12 +106,23 @@ function updateVotes($vote) {
 } 
 
 function getVotePercent($vote) {
-    $percent = array(
-        'noodles' => (100*round($vote['noodles']/($vote['noodles']+$vote['pizza']+$vote['kebap']+$vote['schnitzel']),2)),
-        'pizza' => (100*round($vote['pizza']/($vote['noodles']+$vote['pizza']+$vote['kebap']+$vote['schnitzel']),2)),
-        'kebap' => (100*round($vote['kebap']/($vote['noodles']+$vote['pizza']+$vote['kebap']+$vote['schnitzel']),2)),
-        'schnitzel' => (100*round($vote['schnitzel']/($vote['noodles']+$vote['pizza']+$vote['kebap']+$vote['schnitzel']),2))
-    );
+    $sum = $vote['noodles']+$vote['pizza']+$vote['kebap']+$vote['schnitzel'];
+    if($sum == 0) {
+        $percent = array(
+            'noodles' => $vote['noodles'],
+            'pizza' => $vote['pizza'],
+            'kebap' => $vote['kebap'],
+            'schnitzel' => $vote['schnitzel']
+        );
+    } else {
+        $percent = array(
+            'noodles' => (100*round($vote['noodles']/$sum,2)),
+            'pizza' => (100*round($vote['pizza']/$sum,2)),
+            'kebap' => (100*round($vote['kebap']/$sum,2)),
+            'schnitzel' => (100*round($vote['schnitzel']/$sum,2))
+        );
+    }
+
     return $percent;
 }
 

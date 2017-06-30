@@ -12,7 +12,7 @@
         <li>Reset der Bestellungen</li>
         <li>Reset der Statistik</li>
         <li>Reset der Highscores</li>
-        <li>Diese Seite wurde an Tieren getestet, sie konnten damit erfolgreich bestellen</li>
+        <li>Diese Seite wurde an Tieren getestet, sie konnten damit erfolgreich Essen bestellen</li>
     </ul>
     <hr>
     19.04.2017 v0.2.3:

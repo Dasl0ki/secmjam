@@ -5,8 +5,10 @@
  * Date: 17.03.2016
  * Time: 10:57
  */
+require 'config/functions.php';
 require_once("config/config.php");
 require_once("config/db_cnx.php");
+forceSSL();
 header('Content-Type: text/html; charset=utf-8');
 session_start();
 if($_SESSION["user"]["id"] == "1") {

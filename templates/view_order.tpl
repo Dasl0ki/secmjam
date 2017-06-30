@@ -75,7 +75,7 @@
                                         </td>
                                         <td>€ {$delivery.price|number_format:2:",":"."}</td>
                                         <td>
-                                            {if $delivery.userid == $sessionUser AND $ownerID != $sessionUser}
+                                            {if $delivery.userid == $sessionUser AND $ownerID != $sessionUser AND $deliverys.0.locked != 1}
                                                 <a href="storno.php?id={$delivery.id}">Storno</a>
                                             {/if}
                                         </td>
@@ -94,13 +94,20 @@
                                 <span style="font-size: 18px;">Zusammenfassung</span>
                             </div>
                         </div>
+                        {assign var=totalItemsCount value=0}
                         {foreach item=item from=$totalItems}
                             <div class="row">
                                 <div class="col-xs-12">
                                     {$item.count}x {$item.item}
+                                    {assign var=totalItemsCount value=$totalItemsCount+$item.count}
                                 </div>
                             </div>
                         {/foreach}
+                            <div class="row" style="border-top: 3px double black">
+                                <div class="col-xs-12">
+                                    Summe aller Bestellungen: {$totalItemsCount}
+                                </div>
+                            </div>
                     </div>
                 </div>
                 <div class="col-md-6" style="margin-top: 15px;">

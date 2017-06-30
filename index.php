@@ -5,15 +5,11 @@
  * Date: 13.10.2015
  * Time: 08:01
  */
-if($_SERVER["HTTPS"] != "on")
-{
-    header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
-    exit();
-}
 require 'config/functions.php';
 require 'config/setup.php';
 require_once("config/config.php");
 require_once("config/db_cnx.php");
+forceSSL();
 session_start();
 
 $smarty = new Smarty_mjam();

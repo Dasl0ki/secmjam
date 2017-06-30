@@ -9,7 +9,7 @@ require 'config/setup.php';
 require 'config/functions.php';
 require_once("config/config.php");
 require_once("config/db_cnx.php");
-header('Content-Type: text/html; charset=utf-8');
+forceSSL();
 session_start();
 if($_SESSION["user"]["id"] == "1") {
     ini_set("display_errors", 1);
@@ -43,9 +43,7 @@ if(isset($_SESSION["user"])) {
             $food_id = filter_input(INPUT_POST, 'foodid', FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY);
 
             if($food_id == NULL) {
-                echo "Keine Speise ausgewählt<br>";
-                echo '<a href="javascript:history.back()">Zurück</a>';
-                die;
+                $smarty->assign('error', TRUE);
             } else {
                 $dn = filter_input(INPUT_POST, 'dn', FILTER_SANITIZE_SPECIAL_CHARS);
                 $singleOrder = getSingleOrder($dn);
@@ -63,14 +61,12 @@ if(isset($_SESSION["user"])) {
                     'autolock_time' => $singleOrder['autolock']
                 );
 
-                //var_dump($order);
                 saveOrder($order);
                 $smarty->assign('success', TRUE);
-                header('Refresh:2, url=overview.php?dn='.$singleOrder['delivery_number']);
+                $smarty->assign('dn', $singleOrder['delivery_number']);
             }
             break;
     }
-
     $smarty->display('menue.tpl');
 } else {
     $smarty->display('timeout.tpl');

@@ -3,6 +3,7 @@ require_once("config/config.php");
 require_once("config/db_cnx.php");
 require 'config/functions.php';
 require 'config/setup.php';
+forceSSL();
 header('Content-Type: text/html; charset=utf-8');
 ob_start();
 session_start();

@@ -16,6 +16,34 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <style>
+        .first {
+            background: #f0e68c;
+            background: -webkit-linear-gradient(left, #f0e68c, #ffffff);
+            background: -moz-linear-gradient(left, #f0e68c, #ffffff);
+            background: -ms-linear-gradient(left, #f0e68c, #ffffff);
+            background: -o-linear-gradient(left, #f0e68c, #ffffff);
+            background: linear-gradient(to right, #f0e68c, #ffffff);
+        }
+
+        .second {
+            background: #c0c0c0;
+            background:-webkit-linear-gradient(left, #c0c0c0, #ffffff);
+            background: -moz-linear-gradient(left, #c0c0c0, #ffffff);
+            background: -ms-linear-gradient(left, #c0c0c0, #ffffff);
+            background: -o-linear-gradient(left, #c0c0c0, #ffffff);
+            background: linear-gradient(to right, #c0c0c0, #ffffff);
+        }
+
+        .third {
+            background: #d7995b;
+            background:-webkit-linear-gradient(left, #d7995b, #ffffff);
+            background: -moz-linear-gradient(left, #d7995b, #ffffff);
+            background: -ms-linear-gradient(left, #d7995b, #ffffff);
+            background: -o-linear-gradient(left, #d7995b, #ffffff);
+            background: linear-gradient(to right, #d7995b, #ffffff);
+        }
+    </style>
 </head>
 <body style="margin-top: 5px;">
 {nocache}
@@ -38,7 +66,13 @@
                         {assign var=i value=1}
                         {foreach item=user from=$highscore}
                             {if $user.orders != '0'}
-                                <tr>
+                                <tr class="{if $i == '1'}
+                                        first
+                                    {elseif $i == '2'}
+                                        second
+                                    {elseif $i == '3'}
+                                        third
+                                    {/if}">
                                     <td>#{$i}</td>
                                     <td>{$user.fullname}</td>
                                     <td>{$user.points}</td>

@@ -47,63 +47,25 @@
         </div>
     </div>
     <!-- Menue for Phone End-->
-    {nocache}
-        {if $success == TRUE}
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="alert alert-success" role="alert">
-                        <b>Login erfolgreich</b>, du wirst weitergeleitet
+    <div class="row">
+        <div class="col-md-7">
+            <form class="form-horizontal" method="post" action="pwd_forget.php?page=send">
+                <div class="form-group">
+                    <label for="email" class="col-sm-3 control-label">E-Mail Adresse:</label>
+                    <div class="col-sm-7">
+                        <input class="form-control" type="text" name="email" id="email" placeholder="E-Mail">
                     </div>
                 </div>
-            </div>
-        {elseif $error == TRUE}
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="alert alert-danger" role="alert">
-                        <b>Fehler beim Login</b>, bitte versuche es <a href="index.php">nocheinmal</a>.
+                <div class="form-group">
+                    <label for="submit" class="col-sm-3 control-label"></label>
+                    <div class="col-sm-7">
+                        <td><input class="form-control btn btn-primary" type="submit" value="Senden">
                     </div>
                 </div>
-            </div>
-        {else}
-            <div class="row">
-                <div class="col-md-6">
-                    <form action="index.php?page=login" method="post" class="form-horizontal">
-                        <div class="form-group">
-                            <label for="user" class="col-sm-2 control-label">User:</label>
-                            <div class="col-sm-8">
-                                <input type="text" name="user" id="user" class="form-control" placeholder="User">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="pwd" class="col-sm-2 control-label">Passwort:</label>
-                            <div class="col-sm-8">
-                                <input type="password" name="pwd" id="pwd" class="form-control" placeholder="Passwort">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="submit" class="col-sm-2"></label>
-                            <div class="col-sm-8">
-                                <input type="submit" class="btn btn-primary btn-block" value="Login">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="reg" class="col-sm-2"></label>
-                            <div class="col-sm-8">
-                                <div class="row">
-                                    <div class="col-xs-6">
-                                        <a href="register.php" class="btn btn-default btn-block">Registrieren</a>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        <a href="pwd_forget.php" class="btn btn-default btn-block">Passwort vergessen</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        {/if}
-    {/nocache}
+            </form>
+        </div>
+    </div>
+
 </div>
 </body>
 </html>

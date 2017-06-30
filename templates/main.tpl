@@ -28,6 +28,25 @@
                 xmlhttp.send();
             }
         </script>
+        <style>
+            html {
+                position: relative;
+                min-height: 100%;
+            }
+            body {
+                /* Margin bottom by footer height */
+                margin-bottom: 40px;
+            }
+            .footer {
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                /* Set the fixed height of the footer here */
+                height: 40px;
+                background-color: #f5f5f5;
+                text-align: center;
+            }
+        </style>
     </head>
     <body style="margin-top: 5px;">
         {nocache}
@@ -89,6 +108,11 @@
                 </div>
             </div>
         </div>
+        <footer class="footer">
+            <div class="container">
+                <p class="text-muted">© 2015-2017 <a href="mailto: alexander.dominikus@gmail.com">Alexander Dominikus</a>. Powered by <a href="http://getbootstrap.com" target="_blank">bootstrap</a> and <a href="http://glyphicons.com/" target="_blank">Glyphicons</a></p>
+            </div>
+        </footer>
         {/nocache}
     </body>
 </html>

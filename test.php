@@ -13,12 +13,9 @@ if($_SESSION["user"]["id"] == "1") {
 
 $smarty = new Smarty_mjam();
 
-$autolock_time = new DateTime();
-$dn = '1498718551';
-$time = '12:00';
-$autolock_time->setTimestamp($dn);
-$autolock_time->setTime(substr($time,0,2), substr($time,-2));
-
-echo substr($time,0,2).'<br>';
-echo substr($time,-2).'<br>';
-echo $autolock_time->format('Y-m-d H:i:s');
+if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') === TRUE ) {
+    echo 'Du verwendest einen idiotischen Browser deswegen musst du selbst auf den link klicken, anstatt komfortabel weitergeleitet zu werden!!!<br><br>';
+    die;
+} else {
+    echo 'Baum';
+}

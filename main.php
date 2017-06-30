@@ -4,6 +4,7 @@ require 'config/setup.php';
 require 'config/functions.php';
 require_once("config/config.php");
 require_once("config/db_cnx.php");
+forceSSL();
 header('Content-Type: text/html; charset=utf-8');
 session_start();
 

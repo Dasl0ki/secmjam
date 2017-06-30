@@ -9,6 +9,7 @@ require_once("config/config.php");
 require_once("config/db_cnx.php");
 require 'config/setup.php';
 require 'config/functions.php';
+forceSSL();
 header('Content-Type: text/html; charset=utf-8');
 session_start();
 if($_SESSION["user"]["id"] == "1") {

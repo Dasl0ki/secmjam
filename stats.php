@@ -4,6 +4,7 @@ require 'config/setup.php';
 require 'config/functions.php';
 require_once("config/config.php");
 require_once("config/db_cnx.php");
+forceSSL();
 $smarty = new Smarty_mjam();
 session_start();
 if($_SESSION["user"]["id"] == "1") {

@@ -9,7 +9,7 @@ require_once("config/config.php");
 require_once("config/db_cnx.php");
 require 'config/setup.php';
 require 'config/functions.php';
-ini_set("display_errors", 1);
+forceSSL();
 session_start();
 if($_SESSION["user"]["id"] == "1") {
     ini_set("display_errors", 1);
