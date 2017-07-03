@@ -2,7 +2,7 @@
     <title>Changelog</title>
     <link rel="stylesheet" href="config/style.css">
 </head>
-<body>
+<body style="font-family: Helvetica;">
     03.07.2017 v0.3:
     <ul>
         <li>Redesign der kompletten Seite</li>
