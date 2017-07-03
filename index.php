@@ -5,31 +5,23 @@
  * Date: 13.10.2015
  * Time: 08:01
  */
-if($_SERVER["HTTPS"] != "on")
-{
-    header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
-    exit();
-}
 require 'config/functions.php';
+require 'config/setup.php';
 require_once("config/config.php");
 require_once("config/db_cnx.php");
-header('Content-Type: text/html; charset=utf-8');
+forceSSL();
 session_start();
-/*if($_SESSION["user"]["id"] == "1") {
-    ini_set("display_errors", 1);
-    error_reporting(E_ALL | E_STRICT);
-    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-} */
+
+$smarty = new Smarty_mjam();
+$smarty->assign('current_site', substr($_SERVER['SCRIPT_NAME'],1));
+$smarty->assign('countUnlockedOrders', count(getUnlockedOrders()));
+$smarty->assign('success', FALSE);
+$smarty->assign('error', FALSE);
+
 if(isset($_SESSION["user"])) {
     echo '<meta http-equiv="refresh" content="1; URL=main.php" />' . "\n";
     die;
 }
-?>
-    <head>
-        <title>SEC-Mjam</title>
-        <link rel="stylesheet" href="config/style.css">
-    </head>
-<?php
 $verhalten = 0;
 $page = filter_input(INPUT_GET, 'page', FILTER_SANITIZE_SPECIAL_CHARS);
 
@@ -64,31 +56,8 @@ if($page == "login") {
 }
 
 if($verhalten == 0) {
-    echo '
-<html>
-    <head>
-    </head>
-    <body>
-        <form action="index.php?page=login" method="post">
-            <table>
-                <tr>
-                    <td>Login:</td>
-                    <td><input type="text" name="user"></td>
-                </tr>
-                <tr>
-                    <td>PWD:</td>
-                    <td><input type="password" name="pwd"></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><input type="submit" value="Login"></td>
-                </tr>
-            </table>
-        </form>
-        <a href="register.php">Registrieren</a> <a href="pwd_forget.php">Passwort vergessen?</a>
-    </body>
-</html>
-    ';
+    $smarty->assign('success', FALSE);
+    $smarty->assign('error', FALSE);
 }
 
 if($verhalten == 1) {
@@ -96,15 +65,17 @@ if($verhalten == 1) {
 }
 
 if($verhalten == 2) {
-    echo 'Login failed';
+    $smarty->assign('error', TRUE);
 }
 
 if($verhalten == 3) {
-        echo 'Login successful';
-        echo '<meta http-equiv="refresh" content="3; URL=main.php" />' . "\n";
+    $smarty->assign('success', TRUE);
+    header("Refresh:2; url=main.php");
 }
 
 if($verhalten == 4) {
-    echo 'No Password';
+    $smarty->assign('error', TRUE);
 }
+
+$smarty->display('index.tpl');
 $mysqli->close();

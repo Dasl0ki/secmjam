@@ -4,7 +4,7 @@ $mysqli = new mysqli(   $config['database_sec_mjam']['database_host'],
                         $config['database_sec_mjam']['database_pwd'],
                         $config['database_sec_mjam']['database_name']);
 if($mysqli->errno) {
-    echo "Failed to connect to database" . $mysqli->error();
+    echo "Failed to connect to database" . $mysqli->error;
     die;
 }
 

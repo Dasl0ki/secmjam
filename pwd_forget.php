@@ -6,26 +6,33 @@
  * Time: 10:24
  */
 header('Content-Type: text/html; charset=utf-8');
-ini_set("display_errors", 1);
-error_reporting(E_ALL | E_STRICT);
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 require_once("config/config.php");
 require_once("config/db_cnx.php");
-if(isset($_GET["page"]) and $_GET["page"] == "send") {
-    $user = strtolower($_POST["user"]);
+require 'config/setup.php';
+require 'config/functions.php';
+forceSSL();
 
-    //Get User email adress
-    $select_mail = "SELECT email FROM login WHERE user = ?";
+$smarty = new Smarty_mjam();
+
+$page = filter_input(INPUT_GET, 'page', FILTER_SANITIZE_SPECIAL_CHARS);
+$flag_no_mail = FALSE;
+
+if($page == "send") {
+    $email = strtolower(filter_input(INPUT_POST, 'email', FILTER_SANITIZE_SPECIAL_CHARS));
+
+    $select_mail = "SELECT * FROM login WHERE email = ?";
     $stmt = $mysqli->prepare($select_mail);
-    $stmt->bind_param("s", $user);
-    if($stmt->execute()) {
-        $result = $stmt->execute();
-        $stmt->store_result();
-        $stmt->bind_result($data);
-        $stmt->fetch();
+    $stmt->bind_param('s', $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if($result->num_rows == 0) {
+        $flag_no_mail = TRUE;
+        echo "No Mail";
+    } else {
+        $userData = $result->fetch_assoc();
 
         //Generate userhash
-        $hash = $user.date("Ymd", time());
+        $hash = $userData['user'] . date("Ymd", time());
         $hash = md5($hash);
         $hash = substr($hash, 0, 6);
 
@@ -36,21 +43,21 @@ if(isset($_GET["page"]) and $_GET["page"] == "send") {
         $headers[] = "From: SEC-Mjam <no-reply@loki-net.at>";
         $headers[] = "Reply-To: SEC-Mjam <no-reply@loki-net.at>";
         $headers[] = "Subject: Passwort Rücksetzung";
-        $headers[] = "X-Mailer: PHP/".phpversion();
+        $headers[] = "X-Mailer: PHP/" . phpversion();
 
         $betreff = "Subject: Passwort Rücksetzung";
         $from = "From: SEC-Mjam <no-reply@loki-net.at>";
         $text = 'Es wurde ein neues Passwort für Ihren User angefordert. Sollten sie dies nicht veranlasst haben können sie diese Email ignorieren.<br><br>
-                Sollten sie Ihr Passwort zurücksetzen wollen klicken sie bitte den unten stehenden Link. Sollte dies nicht funktionieren kann er auch
-                in die Adressezeile Ihres Browser kopiert werden<br><br>
-                <a href="http://sec-mjam.loki-net.at/pwd_forget.php?page=reset&check='.$hash.'">http://sec-mjam.loki-net.at/pwd_forget.php?page=reset&check='.$hash.'</a>';
-        mail($data, $betreff, $text, implode("\r\n", $headers));
+            Sollten sie Ihr Passwort zurücksetzen wollen klicken sie bitte den unten stehenden Link. Sollte dies nicht funktionieren kann er auch
+            in die Adressezeile Ihres Browser kopiert werden<br><br>
+            <a href="http://sec-mjam.loki-net.at/pwd_forget.php?page=reset&check=' . $hash . '">http://sec-mjam.loki-net.at/pwd_forget.php?page=reset&check=' . $hash . '</a>';
+        mail($userData['email'], $betreff, $text, implode("\r\n", $headers));
 
         echo "Ein Verifizierungsmail wurde an die hinterlegte Mailadresse gesendet. Bitte überprüfen sie gegebenenfalls auch den Spam-Ordner";
     }
-} elseif(isset($_GET["page"]) and $_GET["page"] == "reset") {
+} elseif($page == "reset") {
     //Get user from hash
-    $check_hash = $_GET["check"];
+    $check_hash = filter_input(INPUT_GET, 'check');
     $select_user = "SELECT * FROM login";
     $query = $mysqli->query($select_user);
     while($row = $query->fetch_assoc()) {
@@ -86,7 +93,7 @@ if(isset($_GET["page"]) and $_GET["page"] == "send") {
             </form><?php
         }
     }
-} elseif(isset($_GET["page"]) and $_GET["page"] == "change") {
+} elseif($page == "change") {
     $id = $_POST["id"];
     $pwd = md5($_POST["pwd"]);
     $pwd2 = md5($_POST["pwd2"]);
@@ -111,22 +118,6 @@ if(isset($_GET["page"]) and $_GET["page"] == "send") {
         die;
     }
 } else {
-    ?>
-
-    <form method="post" action="pwd_forget.php?page=send">
-        <table>
-            <tr>
-                <td><label for="user">Username:</label></td>
-                <td>
-                    <input type="text" name="user" id="user">
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td><input type="submit" value="Senden"></td>
-            </tr>
-        </table>
-    </form>
-    <?php
+    $smarty->display('pwd_forget.tpl');
 }
 ?>

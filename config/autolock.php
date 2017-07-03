@@ -6,7 +6,7 @@ $strQuery = "SET character_set_results = 'utf8',
 				character_set_database = 'utf8',
 				character_set_server = 'utf8'";
 require_once("db_cnx.php");
-$select_orders = "SELECT * FROM deliverys WHERE locked = '0'";
+$select_orders = "SELECT * FROM deliverys WHERE locked = '0' AND autolock IS NOT NULL";
 $query_order = $mysqli->query($select_orders);
 while($row = $query_order->fetch_assoc()) {
     if($row["autolock"] < date("Y-m-d H:i:s", time())) {

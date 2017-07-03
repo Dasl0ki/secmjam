@@ -1,4 +1,5 @@
 <?php
+forceSSL();
 require 'config/setup.php';
 require 'config/functions.php';
 require_once("config/config.php");
