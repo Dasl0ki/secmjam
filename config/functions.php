@@ -431,12 +431,17 @@ function getHighscore() {
     while($row = $query->fetch_assoc()) {
         $sumOrders = getOrderCount($row['id']);
         $sumDeliverys = getDeliverySum();
+        if($sumDeliverys == 0 OR $sumOrders == 0) {
+            $quote = 0;
+        } else {
+            $quote = round(($sumOrders/$sumDeliverys)*100,2);
+        }
         $highscore[] = array(
             'id' => $row['id'],
             'fullname' => $row['firstname'].' '.$row['lastname'],
             'points' => $row['points'],
             'orders' => $sumOrders,
-            'quote' => round(($sumOrders/$sumDeliverys)*100,2)
+            'quote' => $quote
         );
     }
 
