@@ -5,11 +5,11 @@
  * Date: 01.04.2016
  * Time: 09:54
  */
-forceSSL();
 require_once("config/config.php");
 require_once("config/db_cnx.php");
 require 'config/setup.php';
 require 'config/functions.php';
+forceSSL();
 session_start();
 if($_SESSION["user"]["id"] == "1") {
     error_reporting(E_ALL);
