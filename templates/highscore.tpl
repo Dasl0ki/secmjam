@@ -74,7 +74,7 @@
                                         third
                                     {/if}">
                                     <td>#{$i}</td>
-                                    <td>{$user.fullname}</td>
+                                    <td>{$user.data.firstname} {$user.data.lastname}</td>
                                     <td>{$user.points}</td>
                                     <td>{$user.orders}</td>
                                     <td>{$user.quote}%</td>

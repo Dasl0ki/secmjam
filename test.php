@@ -13,9 +13,8 @@ if($_SESSION["user"]["id"] == "1") {
 
 $smarty = new Smarty_mjam();
 
-if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') === TRUE ) {
-    echo 'Du verwendest einen idiotischen Browser deswegen musst du selbst auf den link klicken, anstatt komfortabel weitergeleitet zu werden!!!<br><br>';
-    die;
-} else {
-    echo 'Baum';
+$highscore = getHighscoreArray();
+
+foreach($highscore as $user) {
+    echo $user['data']['firstname'].' '.$user['data']['lastname'].' '.$user['points'].'<br>';
 }
