@@ -21,7 +21,7 @@ $smarty->assign('current_site', substr($_SERVER['SCRIPT_NAME'],1));
 $smarty->assign('countUnlockedOrders', count(getUnlockedOrders()));
 
 if(isset($_SESSION["user"])) {
-   $highscore = getHighscore();
+   $highscore = getHighscoreArray();
 
    $smarty->assign('highscore', $highscore);
    $smarty->display('highscore.tpl');

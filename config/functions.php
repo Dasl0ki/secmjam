@@ -140,9 +140,14 @@ function unlockOrder($dn) {
 
 function closeOrder($dn, $helperArray, $category, $owner) {
     global $mysqli;
-    $update = 'UPDATE deliverys SET status = 1, locked = 1 WHERE delivery_number = ?';
+    $helperString = "";
+    foreach($helperArray as $helper) {
+        $helperString .= '"'.$helper.'"|';
+    }
+    $helperString = substr($helperString,0, -1);
+    $update = 'UPDATE deliverys SET status = 1, locked = 1, helper = ? WHERE delivery_number = ?';
     $stmt = $mysqli->prepare($update);
-    $stmt->bind_param('s', $dn);
+    $stmt->bind_param('ss', $helperString, $dn);
     $stmt->execute();
     
     $pts = parse_ini_file('config/pts.ini', TRUE);
@@ -499,4 +504,82 @@ function sendInfoMail($owner, $category, $autolock = FALSE, $time = '00:00') {
     foreach ($receiver_arr as $receiver) {
         mail($receiver, $betreff, $text, implode("\r\n", $headers));
     }
+}
+
+function calcOwnerPoints($user) {
+    global $mysqli;
+    $select = 'SELECT delivery_number FROM deliverys WHERE owner = '.$user.' GROUP BY delivery_number';
+    $query = $mysqli->query($select);
+    if($query->num_rows != 0) {
+        $total = 0;
+        while ($row = $query->fetch_object()) {
+            $total += getPointsFromDelivery($row->delivery_number);
+        }
+    } else {
+        $total = 0;
+    }
+
+    return $total;
+}
+
+function calcHelperPoints($user) {
+    global $mysqli;
+    $select = 'SELECT delivery_number FROM deliverys WHERE helper LIKE \'%"'.$user.'"%\' GROUP BY delivery_number';
+    $query = $mysqli->query($select);
+    if($query->num_rows != 0) {
+        $total = 0;
+        while ($row = $query->fetch_object()) {
+            $total += getPointsFromDelivery($row->delivery_number);
+        }
+    } else {
+        $total = 0;
+    }
+
+    return $total/2;
+}
+
+function getPointsFromDelivery($dn) {
+    global $mysqli;
+    $pointsArray = parse_ini_file('config/pts.ini', TRUE);
+    $select = 'SELECT count(delivery_number), category FROM deliverys WHERE delivery_number = '.$dn;
+    $query = $mysqli->query($select);
+    $result = $query->fetch_assoc();
+    $count = $result['count(delivery_number)'];
+    $points = $count * $pointsArray['pts'][$result['category']];
+
+    return $points;
+}
+
+function getHighscoreArray() {
+    global $mysqli;
+    $userArray = array();
+    $sortArray = array();
+    $highscore = array();
+    $select = 'SELECT id FROM login WHERE active = TRUE';
+    $query = $mysqli->query($select);
+    while($row = $query->fetch_object()) {
+        $userArray[] = $row->id;
+    }
+
+    foreach($userArray as $user) {
+        $sortArray[$user] = calcHelperPoints($user) + calcOwnerPoints($user);
+    }
+
+    arsort($sortArray);
+
+    foreach($sortArray as $user => $points) {
+        $sumOrders = getOrderCount($user);
+        $sumDeliverys = getDeliverySum();
+        $highscore[$user]['points'] = $points;
+        $highscore[$user]['data'] = getUserData($user);
+        $highscore[$user]['orders'] = $sumOrders;
+
+        if($sumDeliverys == 0 OR $sumOrders == 0) {
+            $highscore[$user]['quote'] = 0;
+        } else {
+            $highscore[$user]['quote'] = round(($sumOrders/$sumDeliverys)*100,2);
+        }
+    }
+
+    return $highscore;
 }
