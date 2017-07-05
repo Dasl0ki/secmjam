@@ -498,7 +498,7 @@ function sendHelperMail($helperArray, $dn) {
     $headers[] = "Content-Type: text/html; charset=UTF-8";
     $headers[] = "From: SEC-Mjam <no-reply@loki-net.at>";
     $headers[] = "Reply-To: SEC-Mjam <no-reply@loki-net.at>";
-    $headers[] = "Subject: Neue SEC-Mjam Bestellung";
+    $headers[] = "Subject: Abschluss einer SEC-Mjam Bestellung";
     $headers[] = "X-Mailer: PHP/".phpversion();
     $betreff = "Abschluss einer SEC-Mjam Bestellung";
 
