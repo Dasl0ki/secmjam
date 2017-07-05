@@ -58,7 +58,7 @@
                         <span style="font-size: 18px;">Übersicht</span>
                         <p style="padding-left:25px; padding-right: 25px;">
                             {*Guthaben: € 0,00*}
-                            Punktestand: {$user.points}
+                            Punktestand: {$points}
                         </p>
                     </div>
                 </div>

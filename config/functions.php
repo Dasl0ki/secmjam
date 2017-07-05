@@ -138,7 +138,7 @@ function unlockOrder($dn) {
     $mysqli->query($update_lock);
 }
 
-function closeOrder($dn, $helperArray, $category, $owner) {
+function closeOrder($dn, $helperArray) {
     global $mysqli;
     $helperString = "";
     foreach($helperArray as $helper) {
@@ -149,23 +149,9 @@ function closeOrder($dn, $helperArray, $category, $owner) {
     $stmt = $mysqli->prepare($update);
     $stmt->bind_param('ss', $helperString, $dn);
     $stmt->execute();
-    
-    $pts = parse_ini_file('config/pts.ini', TRUE);
-    $delivery_count = 'SELECT count(DISTINCT userid) FROM deliverys WHERE delivery_number = ?';
-    $stmt = $mysqli->prepare($delivery_count);
-    $stmt->bind_param('s', $dn);
-    $stmt->execute();
-    $result = $stmt->get_result()->fetch_assoc();
-    $points = $result['count(DISTINCT userid)'] * $pts['pts'][$category];
-    $pointsold = getPoints($owner);
-    $update_owner = 'UPDATE login SET points = '.($pointsold + $points).' WHERE id = '.$owner;
-    $mysqli->query($update_owner);
+
     if($helperArray != NULL) {
-        foreach($helperArray as $helper) {
-            $pointsold = getPoints($helper);
-            $update_helper = 'UPDATE login SET points = '.($pointsold + ceil($points/2)).' WHERE id = '.$helper;
-            $mysqli->query($update_helper);
-        }
+        sendHelperMail($helperArray, $dn);
     }
 }
 
@@ -503,6 +489,30 @@ function sendInfoMail($owner, $category, $autolock = FALSE, $time = '00:00') {
 
     foreach ($receiver_arr as $receiver) {
         mail($receiver, $betreff, $text, implode("\r\n", $headers));
+    }
+}
+
+function sendHelperMail($helperArray, $dn) {
+    $headers = array();
+    $headers[] = "MIME-Version: 1.0";
+    $headers[] = "Content-Type: text/html; charset=UTF-8";
+    $headers[] = "From: SEC-Mjam <no-reply@loki-net.at>";
+    $headers[] = "Reply-To: SEC-Mjam <no-reply@loki-net.at>";
+    $headers[] = "Subject: Neue SEC-Mjam Bestellung";
+    $headers[] = "X-Mailer: PHP/".phpversion();
+    $betreff = "Abschluss einer SEC-Mjam Bestellung";
+
+    $text = file_get_contents('mailTemplates/mailHelper.html');
+    $delivery = getDeliverys($dn);
+    $ownerData = getUserData($delivery[0]['owner']);
+    $points = getPointsFromDelivery($dn);
+
+    foreach ($helperArray as $helper) {
+        $helperData = getUserData($helper);
+        $text = str_replace('[points]', $points/2, $text);
+        $text = str_replace('[name]', $ownerData['firstname'].' '.$ownerData['lastname'], $text);
+        $text = str_replace('[dn]', $dn, $text);
+        mail($helperData['email'], $betreff, $text, implode("\r\n", $headers));
     }
 }
 

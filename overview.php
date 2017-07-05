@@ -35,7 +35,7 @@ if(isset($_SESSION["user"])) {
         elseif($do == 'close' AND $_SESSION["user"]["id"] == $delivery[0]['owner']) {
             $helper = filter_input(INPUT_POST, 'helper', FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY);
             $category = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_SPECIAL_CHARS);
-            closeOrder($dn, $helper, $category, $delivery[0]['owner']);
+            closeOrder($dn, $helper);
             header('Location: overview.php?dn='.$dn);
         }
         else {
