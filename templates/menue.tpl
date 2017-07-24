@@ -86,40 +86,80 @@
                                     </thead>
                                     <tbody>
                                     {foreach item=item from=$menue}
-                                        <tr>
-                                            <td>{$item.sub_category}</td>
-                                            <td>{$item.item}</td>
-                                            <td>{$item.size}</td>
-                                            <td>
-                                                {if $category == 'noodles'}
-                                                    <select size="1" name="sauce[{$item.id}][]">
-                                                        <option value="false"></option>
-                                                        <option value="Ohne">Ohne</option>
-                                                        <option value="Soja">Soja</option>
-                                                        <option value="Süß-Sauer">Süß-Sauer</option>
-                                                        <option value="Teriyaki">Teriyaki</option>
-                                                        <option value="Scharf">Scharf</option>
-                                                    </select>
-                                                {elseif $category == 'schnitzel'}
-                                                    <input type="checkbox" name="sauce[{$item.id}][]" value="ketchup">Ketchup<br>
-                                                    <input type="checkbox" name="sauce[{$item.id}][]" value="mayo">Mayo<br>
-                                                    <input type="checkbox" name="sauce[{$item.id}][]" value="senf">Senf<br>
-                                                    <input type="checkbox" name="sauce[{$item.id}][]" value="salat">Salat<br>
-                                                {elseif $category == 'kebap'}
-                                                    <input type="checkbox" name="sauce[{$item.id}][]" value="salat">Ohne Salat<br>
-                                                    <input type="checkbox" name="sauce[{$item.id}][]" value="zwiebel">Ohne Zwiebel<br>
-                                                    <input type="checkbox" name="sauce[{$item.id}][]" value="tomate">Ohne Tomate<br>
-                                                    <input type="checkbox" name="sauce[{$item.id}][]" value="sauce">Ohne Sauce<br>
-                                                    <input type="checkbox" name="sauce[{$item.id}][]" value="scharf">Ohne Scharf<br>
-                                                    <input type="checkbox" name="sauce[{$item.id}][]" value="rotkraut">Ohne Rotkraut<br>
-                                                {else}
-                                                    <input type="hidden" value="-" name="sauce[{$item.id}][]"> -
-                                                {/if}
-                                            </td>
-                                            <td>€ {$item.prize|number_format:2:',':'.'}</td>
-                                            <td><input type="number" name="amount[{$item.id}]" min="1" max="5" value="1"></td>
-                                            <td><input type="checkbox" value="{$item.id}" name="foodid[]"></td>
-                                        </tr>
+                                        {if $item.sub_category != 'Beilage'}
+                                            <tr>
+                                                <td>{$item.sub_category}</td>
+                                                <td>{$item.item}</td>
+                                                <td>{$item.size}</td>
+                                                <td>
+                                                    {if $category == 'noodles'}
+                                                        <select size="1" name="sauce[{$item.id}][]">
+                                                            <option value="false"></option>
+                                                            <option value="Ohne">Ohne</option>
+                                                            <option value="Soja">Soja</option>
+                                                            <option value="Süß-Sauer">Süß-Sauer</option>
+                                                            <option value="Teriyaki">Teriyaki</option>
+                                                            <option value="Scharf">Scharf</option>
+                                                        </select>
+                                                    {elseif $category == 'schnitzel' AND $item.sub_category != 'Beilage'}
+                                                        <input type="checkbox" name="sauce[{$item.id}][]" value="ketchup">Ketchup<br>
+                                                        <input type="checkbox" name="sauce[{$item.id}][]" value="mayo">Mayo<br>
+                                                        <input type="checkbox" name="sauce[{$item.id}][]" value="senf">Senf<br>
+                                                        <input type="checkbox" name="sauce[{$item.id}][]" value="salat">Salat<br>
+                                                    {elseif $category == 'kebap'}
+                                                        <input type="checkbox" name="sauce[{$item.id}][]" value="salat">Ohne Salat<br>
+                                                        <input type="checkbox" name="sauce[{$item.id}][]" value="zwiebel">Ohne Zwiebel<br>
+                                                        <input type="checkbox" name="sauce[{$item.id}][]" value="tomate">Ohne Tomate<br>
+                                                        <input type="checkbox" name="sauce[{$item.id}][]" value="sauce">Ohne Sauce<br>
+                                                        <input type="checkbox" name="sauce[{$item.id}][]" value="scharf">Ohne Scharf<br>
+                                                        <input type="checkbox" name="sauce[{$item.id}][]" value="rotkraut">Ohne Rotkraut<br>
+                                                    {else}
+                                                        <input type="hidden" value="-" name="sauce[{$item.id}][]"> -
+                                                    {/if}
+                                                </td>
+                                                <td>€ {$item.prize|number_format:2:',':'.'}</td>
+                                                <td><input type="number" name="amount[{$item.id}]" min="1" max="5" value="1"></td>
+                                                <td><input type="checkbox" value="{$item.id}" name="foodid[]"></td>
+                                            </tr>
+                                        {/if}
+                                    {/foreach}
+                                    {foreach item=item from=$menue}
+                                        {if $item.sub_category == 'Beilage'}
+                                            <tr>
+                                                <td>{$item.sub_category}</td>
+                                                <td>{$item.item}</td>
+                                                <td>{$item.size}</td>
+                                                <td>
+                                                    {if $category == 'noodles'}
+                                                        <select size="1" name="sauce[{$item.id}][]">
+                                                            <option value="false"></option>
+                                                            <option value="Ohne">Ohne</option>
+                                                            <option value="Soja">Soja</option>
+                                                            <option value="Süß-Sauer">Süß-Sauer</option>
+                                                            <option value="Teriyaki">Teriyaki</option>
+                                                            <option value="Scharf">Scharf</option>
+                                                        </select>
+                                                    {elseif $category == 'schnitzel' AND $item.sub_category != 'Beilage'}
+                                                        <input type="checkbox" name="sauce[{$item.id}][]" value="ketchup">Ketchup<br>
+                                                        <input type="checkbox" name="sauce[{$item.id}][]" value="mayo">Mayo<br>
+                                                        <input type="checkbox" name="sauce[{$item.id}][]" value="senf">Senf<br>
+                                                        <input type="checkbox" name="sauce[{$item.id}][]" value="salat">Salat<br>
+                                                    {elseif $category == 'kebap'}
+                                                        <input type="checkbox" name="sauce[{$item.id}][]" value="salat">Ohne Salat<br>
+                                                        <input type="checkbox" name="sauce[{$item.id}][]" value="zwiebel">Ohne Zwiebel<br>
+                                                        <input type="checkbox" name="sauce[{$item.id}][]" value="tomate">Ohne Tomate<br>
+                                                        <input type="checkbox" name="sauce[{$item.id}][]" value="sauce">Ohne Sauce<br>
+                                                        <input type="checkbox" name="sauce[{$item.id}][]" value="scharf">Ohne Scharf<br>
+                                                        <input type="checkbox" name="sauce[{$item.id}][]" value="rotkraut">Ohne Rotkraut<br>
+                                                    {else}
+                                                        <input type="hidden" value="-" name="sauce[{$item.id}][]"> -
+                                                    {/if}
+                                                </td>
+                                                <td>€ {$item.prize|number_format:2:',':'.'}</td>
+                                                <td><input type="number" name="amount[{$item.id}]" min="1" max="5" value="1"></td>
+                                                <td><input type="checkbox" value="{$item.id}" name="foodid[]"></td>
+                                            </tr>
+                                        {/if}
                                     {/foreach}
                                     </tbody>
                                 </table>

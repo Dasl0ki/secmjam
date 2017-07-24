@@ -30,7 +30,7 @@
                         Bestellungen für den {$date_display}
                     </span>
                     <br>
-                    Owner: {$ownerFullName}
+                    Owner: {$ownerFullName}<br>
                 </div>
             </div>
             <div class="row">
@@ -69,6 +69,8 @@
                                                 {/foreach}
                                                 {$extraOutput|substr:0:-2}
                                                 {assign var=extraOutput value=''}
+                                            {elseif $delivery.extra == 'false'}
+                                                -
                                             {else}
                                                 {$delivery.extra}
                                             {/if}
@@ -104,8 +106,11 @@
                             </div>
                         {/foreach}
                             <div class="row" style="border-top: 3px double black">
-                                <div class="col-xs-12">
+                                <div class="col-sm-6">
                                     Summe aller Bestellungen: {$totalItemsCount}
+                                </div>
+                                <div class="col-sm-6">
+                                    Punktewert: {$points}
                                 </div>
                             </div>
                     </div>
