@@ -89,6 +89,7 @@ if(isset($_SESSION["user"])) {
         $smarty->assign('ownerID', $owner);
         $smarty->assign('ownerFullName', $ownerData['firstname'] . " " . $ownerData['lastname']);
         $smarty->assign('category', $category);
+        $smarty->assign('points', getPointsFromDelivery($dn));
         $smarty->assign('helperArray', $helperArray);
         $smarty->assign('to', floor(count($helperArray)/10));
         $smarty->assign('col', 12/ceil(count($helperArray)/10));

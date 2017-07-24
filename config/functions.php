@@ -322,7 +322,11 @@ function totalItems($dn) {
     
     foreach ($items as $item) {
         $itemData = getItem($item);
-        $total[$item]['item'] = $itemData['sub_category'].' '.$itemData['item'];
+        if($itemData['size'] != '-') {
+            $total[$item]['item'] = $itemData['sub_category'].' '.$itemData['item'].' '.$itemData['size'];
+        } else {
+            $total[$item]['item'] = $itemData['sub_category'].' '.$itemData['item'];
+        }
         $count = 'SELECT count(delivery_text) FROM deliverys WHERE delivery_text = '.$item.' AND delivery_number = '.$dn;
         $query = $mysqli->query($count);
         $itemCount = $query->fetch_assoc();
