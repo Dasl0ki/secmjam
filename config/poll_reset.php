@@ -12,7 +12,7 @@ $strQuery = "SET character_set_results = 'utf8',
 				character_set_database = 'utf8',
 				character_set_server = 'utf8'";
 require_once("db_cnx.php");
-$filename = "sec-mjam.loki-net.at/config/poll_result.txt";
+$filename = "/var/www/vhosts/loki-net.at/sec-mjam.loki-net.at/prod/config/poll_result.txt";
 $insertvote = "0||0||0||0";
 $fp = fopen($filename,"w");
 fputs($fp,$insertvote);
