@@ -25,6 +25,9 @@ if ($uservote == 3) {
 if ($uservote == 4) {
     $vote['schnitzel'] = $vote['schnitzel'] + 1;
 }
+if ($uservote == 5) {
+    $vote['grill'] = $vote['grill'] + 1;
+}
 
 updateVotes($vote);
 $percent = getVotePercent($vote);
@@ -72,6 +75,13 @@ $_SESSION["user"]["vote"] = "1";
         <div class="progress">
             <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $percent['schnitzel']; ?>%; min-width: 2em;">
               <?php echo $percent['schnitzel']; ?>%
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-9">
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $percent['grill']; ?>%; min-width: 2em;">
+              <?php echo $percent['grill']; ?>%
             </div>
         </div>
     </div>
