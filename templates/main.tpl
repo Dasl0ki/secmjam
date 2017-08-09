@@ -95,6 +95,12 @@
                                         Schnitzel
                                     </label>
                                 </div>
+                                <div class="radio">
+                                    <label for="schnitzel">                                
+                                        <input type="radio" value="5" onclick="getVote(this.value)">
+                                        Grill
+                                    </label>
+                                </div>
                             </form>
                             {/if}
                         </div>

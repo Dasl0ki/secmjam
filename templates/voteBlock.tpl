@@ -39,4 +39,14 @@
             </div>
         </div>
     </div>
+    <div class="col-xs-3">
+        Grill:
+    </div>
+    <div class="col-xs-9">
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: {$percent.grill}%; min-width: 2em;">
+              {$percent.grill}%
+            </div>
+        </div>
+    </div>
 </div>

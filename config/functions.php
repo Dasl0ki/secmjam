@@ -91,7 +91,8 @@ function getPollVotes() {
         'noodles' => $array[0],
         'pizza' => $array[1],
         'kebap' => $array[2],
-        'schnitzel' => $array[3]
+        'schnitzel' => $array[3],
+        'grill' => $array[4]
     );
     
     return $vote;
@@ -99,27 +100,29 @@ function getPollVotes() {
 
 function updateVotes($vote) {
     $filename = "config/poll_result.txt";
-    $insertvote = $vote['noodles']."||".$vote['pizza']."||".$vote['kebap']."||".$vote['schnitzel'];
+    $insertvote = $vote['noodles']."||".$vote['pizza']."||".$vote['kebap']."||".$vote['schnitzel']."||".$vote['grill'];
     $fp = fopen($filename,"w");
     fputs($fp,$insertvote);
     fclose($fp);
 } 
 
 function getVotePercent($vote) {
-    $sum = $vote['noodles']+$vote['pizza']+$vote['kebap']+$vote['schnitzel'];
+    $sum = $vote['noodles']+$vote['pizza']+$vote['kebap']+$vote['schnitzel']+$vote['grill'];
     if($sum == 0) {
         $percent = array(
             'noodles' => $vote['noodles'],
             'pizza' => $vote['pizza'],
             'kebap' => $vote['kebap'],
-            'schnitzel' => $vote['schnitzel']
+            'schnitzel' => $vote['schnitzel'],
+            'grill' => $vote['grill']
         );
     } else {
         $percent = array(
             'noodles' => (100*round($vote['noodles']/$sum,2)),
             'pizza' => (100*round($vote['pizza']/$sum,2)),
             'kebap' => (100*round($vote['kebap']/$sum,2)),
-            'schnitzel' => (100*round($vote['schnitzel']/$sum,2))
+            'schnitzel' => (100*round($vote['schnitzel']/$sum,2)),
+            'grill' => (100*round($vote['grill']/$sum,2))
         );
     }
 
@@ -387,8 +390,10 @@ function saveOrder($order) {
 
     foreach ($order['food'] as $item) {
         for ($i = 1; $i <= $order['amount'][$item]; $i++) {
-            foreach ($order['sauce'][$item] as $extra) {
-                $extras .= '|' . $extra;
+            if(!empty($order['sauce'][$item])) {
+                foreach ($order['sauce'][$item] as $extra) {
+                    $extras .= '|' . $extra;
+                }
             }
             $extras = substr($extras,1);
             $insert = 'INSERT INTO deliverys (delivery_number, delivery_text, userid, sauce, owner, category, autolock, timestamp) VALUES (?,?,?,?,?,?,?,?)';
