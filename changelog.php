@@ -3,6 +3,11 @@
     <link rel="stylesheet" href="config/style.css">
 </head>
 <body style="font-family: Helvetica;">
+    09.08.2017 v0.3:
+    <ul>
+        <li>Neuer Lieferant - Homolje Grill</li>
+    </ul>
+    <hr>
     03.07.2017 v0.3:
     <ul>
         <li>Redesign der kompletten Seite</li>
